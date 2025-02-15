@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TODOリスト</title>
+</head>
+
+<body>
+  <h1>TODOリスト</h1>
+  <form action="/add" method="POST">
+    <input type="text" name="todo" placeholder="タスクを入力" required>
+    <button type="submit">追加</button>
+  </form>
+  <ul>
+    {{range .}}
+    <li>
+      {{.Name}} <a href="/delete?id={{.ID}}">削除</a>
+    </li>
+    {{else}}
+    <li>タスクがありません。</li>
+    {{end}}
+  </ul>
+</body>
+
+</html>
