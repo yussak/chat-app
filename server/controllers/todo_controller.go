@@ -60,7 +60,7 @@ func AddTodo(c echo.Context) error {
 }
 
 func DeleteTodo(c echo.Context) error {
-	id := c.QueryParam("id")
+	id := c.Param("id")
 	if id == "" {
 		return c.String(http.StatusBadRequest, "IDが空です")
 	}
@@ -71,5 +71,5 @@ func DeleteTodo(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "データベースエラー")
 	}
 
-	return c.Redirect(http.StatusSeeOther, "/")
+	return c.String(http.StatusOK, "Todoが削除されました")
 }

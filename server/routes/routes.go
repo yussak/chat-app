@@ -7,13 +7,13 @@ import (
 )
 
 func SetupRoutes(e *echo.Echo) {
-	e.GET("/", func(c echo.Context) error {
+	e.GET("/todos", func(c echo.Context) error {
 		return controllers.ListTodos(c)
 	})
-	e.POST("/add", func(c echo.Context) error {
+	e.POST("/todos", func(c echo.Context) error {
 		return controllers.AddTodo(c)
 	})
-	e.DELETE("/delete", func(c echo.Context) error {
+	e.DELETE("/todos/:id", func(c echo.Context) error {
 		return controllers.DeleteTodo(c)
 	})
 }

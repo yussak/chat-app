@@ -10,9 +10,9 @@ export default function Home() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
 
-  const fetchtodos = () => axios.get("http://localhost:8080/");
+  const fetchtodos = () => axios.get("http://localhost:8080/todos");
   const postMessage = (name: string) =>
-    axios.post("http://localhost:8080/add", { name });
+    axios.post("http://localhost:8080/todos", { name });
 
   useEffect(() => {
     fetchtodos().then((res) => setTodos(res.data));
@@ -37,12 +37,11 @@ export default function Home() {
               <li key={todo.ID}>
                 {todo.ID}
                 {todo.Name}
-                {/* 削除ボタン */}
                 <button
                   onClick={async () => {
-                    await axios.delete(`http://localhost:8080/delete`, {
-                      params: { id: todo.ID },
-                    });
+                    await axios.delete(
+                      `http://localhost:8080/todos/${todo.ID}`
+                    );
                     setTodos(todos.filter((t) => t.ID !== todo.ID));
                   }}
                 >
