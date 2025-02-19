@@ -3,6 +3,7 @@
 import axios from "axios";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { api } from "./lib/api-client";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -10,9 +11,9 @@ export default function Home() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
 
-  const fetchtodos = () => axios.get("http://localhost:8080/todos");
+  const fetchtodos = () => api.get("http://localhost:8080/todos");
   const postMessage = (name: string) =>
-    axios.post("http://localhost:8080/todos", { name });
+    api.post("http://localhost:8080/todos", { name });
 
   useEffect(() => {
     fetchtodos().then((res) => setTodos(res.data));
@@ -33,22 +34,23 @@ export default function Home() {
           <button onClick={() => signOut()}>Sign out</button>
 
           <ul>
-            {todos.map((todo) => (
-              <li key={todo.ID}>
-                {todo.ID}
-                {todo.Name}
-                <button
-                  onClick={async () => {
-                    await axios.delete(
-                      `http://localhost:8080/todos/${todo.ID}`
-                    );
-                    setTodos(todos.filter((t) => t.ID !== todo.ID));
-                  }}
-                >
-                  del
-                </button>
-              </li>
-            ))}
+            {todos &&
+              todos.map((todo) => (
+                <li key={todo.ID}>
+                  {todo.ID}
+                  {todo.Name}
+                  <button
+                    onClick={async () => {
+                      await api.delete(
+                        `http://localhost:8080/todos/${todo.ID}`
+                      );
+                      setTodos(todos.filter((t) => t.ID !== todo.ID));
+                    }}
+                  >
+                    del
+                  </button>
+                </li>
+              ))}
           </ul>
 
           <div>
