@@ -20,7 +20,7 @@ func main() {
 	// CORSの設定
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		// アクセスを許可するオリジンを指定
-		AllowOrigins: []string{"http://localhost:5173"},
+		AllowOrigins: []string{"http://localhost:3000"},
 		// アクセスを許可するメソッドを指定
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 		// アクセスを許可するヘッダーを指定
