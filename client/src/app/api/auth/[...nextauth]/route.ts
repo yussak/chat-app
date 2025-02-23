@@ -21,7 +21,6 @@ const handler = NextAuth({
             image: user.image,
           }),
         });
-        // console.log(response);
 
         const dbUser = await response.json();
         // console.log(dbUser);

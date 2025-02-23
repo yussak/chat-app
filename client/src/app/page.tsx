@@ -1,6 +1,5 @@
 "use client";
 
-import axios from "axios";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { api } from "./lib/api-client";
@@ -8,12 +7,12 @@ import { api } from "./lib/api-client";
 export default function Home() {
   const { data: session } = useSession();
 
-  const [todos, setTodos] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
-  const fetchtodos = () => api.get("http://localhost:8080/todos");
+  const fetchMessages = () => api.get("http://localhost:8080/messages");
   const postMessage = (name: string) =>
-    api.post("http://localhost:8080/todos", {
+    api.post("http://localhost:8080/messages", {
       name,
       user: {
         id: session?.user?.id,
@@ -23,16 +22,17 @@ export default function Home() {
     });
 
   useEffect(() => {
-    fetchtodos().then((res) => setTodos(res.data));
+    fetchMessages().then((res) => setMessages(res.data));
   }, []);
 
   const handleSend = async () => {
     if (!input.trim()) return;
     const res = await postMessage(input);
-    setTodos([...todos, res.data]);
+    setMessages([...messages, res.data]);
     setInput("");
   };
 
+  console.log(messages);
   return (
     <div>
       {session ? (
@@ -41,26 +41,26 @@ export default function Home() {
           <button onClick={() => signOut()}>Sign out</button>
 
           <ul>
-            {todos &&
-              todos.map((todo) => (
-                <li key={todo.ID} className="border-t-2">
-                  {/* {todo.ID} */}
+            {messages &&
+              messages.map((message) => (
+                <li key={message.ID} className="border-t-2">
+                  {/* {message.ID} */}
                   <p>
                     <img
-                      src={todo.User.Image}
+                      src={message.User.Image}
                       alt="user image"
                       width={100}
                       height={100}
                     />
-                    user name:{todo.User.Name}
+                    user name:{message.User.Name}
                   </p>
-                  todo name:{todo.Name}
+                  message name:{message.Name}
                   <button
                     onClick={async () => {
                       await api.delete(
-                        `http://localhost:8080/todos/${todo.ID}`
+                        `http://localhost:8080/messages/${message.ID}`
                       );
-                      setTodos(todos.filter((t) => t.ID !== todo.ID));
+                      setMessages(messages.filter((t) => t.ID !== message.ID));
                     }}
                   >
                     del

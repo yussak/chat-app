@@ -1,6 +1,6 @@
 package models
 
-type Todo struct {
+type Message struct {
 	ID   int
 	Name string
 	User User

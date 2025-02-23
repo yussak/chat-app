@@ -11,13 +11,13 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.SignInHandler(c)
 	})
 
-	e.GET("/todos", func(c echo.Context) error {
-		return controllers.ListTodos(c)
+	e.GET("/messages", func(c echo.Context) error {
+		return controllers.ListMessages(c)
 	})
-	e.POST("/todos", func(c echo.Context) error {
-		return controllers.AddTodo(c)
+	e.POST("/messages", func(c echo.Context) error {
+		return controllers.AddMessage(c)
 	})
-	e.DELETE("/todos/:id", func(c echo.Context) error {
-		return controllers.DeleteTodo(c)
+	e.DELETE("/messages/:id", func(c echo.Context) error {
+		return controllers.DeleteMessage(c)
 	})
 }

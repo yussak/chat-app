@@ -43,7 +43,7 @@ func initTable() error {
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	);
 
-	CREATE TABLE IF NOT EXISTS todos (
+	CREATE TABLE IF NOT EXISTS messages (
 		id SERIAL PRIMARY KEY,
 		name TEXT NOT NULL,
 		user_id INTEGER REFERENCES users(id),
