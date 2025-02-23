@@ -11,7 +11,6 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user }) {
       try {
-        // const response = await fetch(`http://localhost:8080/users/signin`, {
         const response = await fetch(`http://server:8080/users/signin`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -23,7 +22,6 @@ const handler = NextAuth({
         });
 
         const dbUser = await response.json();
-        // console.log(dbUser);
         // セッションにDBのユーザーIDを保存するため
         user.id = dbUser.ID;
         return true;

@@ -2,6 +2,6 @@ package models
 
 type Message struct {
 	ID   int
-	Name string
+	Content string
 	User User
 }

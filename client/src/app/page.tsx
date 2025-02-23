@@ -11,9 +11,9 @@ export default function Home() {
   const [input, setInput] = useState("");
 
   const fetchMessages = () => api.get("http://localhost:8080/messages");
-  const postMessage = (name: string) =>
+  const postMessage = (content: string) =>
     api.post("http://localhost:8080/messages", {
-      name,
+      content,
       user: {
         id: session?.user?.id,
         name: session?.user?.name,
@@ -32,7 +32,6 @@ export default function Home() {
     setInput("");
   };
 
-  console.log(messages);
   return (
     <div>
       {session ? (
@@ -54,7 +53,7 @@ export default function Home() {
                     />
                     user name:{message.User.Name}
                   </p>
-                  message name:{message.Name}
+                  message content:{message.Content}
                   <button
                     onClick={async () => {
                       await api.delete(

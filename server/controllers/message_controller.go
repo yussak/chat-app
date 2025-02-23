@@ -10,7 +10,7 @@ import (
 
 func ListMessages(c echo.Context) error {
 	query := `
-		SELECT m.id, m.name, u.id, u.name, u.image 
+		SELECT m.id, m.content, u.id, u.name, u.image 
 		FROM messages m 
 		LEFT JOIN users u ON m.user_id = u.id
 	`
@@ -27,7 +27,7 @@ func ListMessages(c echo.Context) error {
 		user := models.User{}
 		if err := rows.Scan(
 			&message.ID, 
-			&message.Name, 
+			&message.Content, 
 			&user.ID, 
 			&user.Name, 
 			&user.Image,
@@ -48,15 +48,15 @@ func AddMessage(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.String(http.StatusBadRequest, "リクエストの形式が正しくありません")
 	}
-	if req.Name == "" {
-		return c.String(http.StatusBadRequest, "Message名が空です")
+	if req.Content == "" {
+		return c.String(http.StatusBadRequest, "Messageが空です")
 	}
 
 	// MessagesテーブルにINSERTして、INSERTしたレコードのIDを取得
 	var insertedID int
 	err := db.DB.QueryRow(
-		"INSERT INTO messages (name, user_id) VALUES ($1, $2) RETURNING id",
-		req.Name,
+		"INSERT INTO messages (content, user_id) VALUES ($1, $2) RETURNING id",
+		req.Content,
 		req.User.ID,
 	).Scan(&insertedID)
 
@@ -67,7 +67,7 @@ func AddMessage(c echo.Context) error {
 	// 登録したMessageをJSONで返す
 	newMessage := models.Message{
 		ID:   insertedID,
-		Name: req.Name,
+		Content: req.Content,
 		User: req.User,
 	}
 
