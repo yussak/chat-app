@@ -7,6 +7,10 @@ import (
 )
 
 func SetupRoutes(e *echo.Echo) {
+	e.POST("/users/signin", func(c echo.Context) error {
+		return controllers.SignInHandler(c)
+	})
+
 	e.GET("/todos", func(c echo.Context) error {
 		return controllers.ListTodos(c)
 	})

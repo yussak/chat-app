@@ -37,7 +37,17 @@ func initTable() error {
 	CREATE TABLE IF NOT EXISTS todos (
 		id SERIAL PRIMARY KEY,
 		name TEXT NOT NULL
-	)`
+	);
+
+	CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
+		name TEXT,
+		email TEXT UNIQUE NOT NULL,
+		image TEXT,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);`
+
 	_, err := DB.Exec(query)
 	log.Println("テーブルのセットアップ完了")
 
