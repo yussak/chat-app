@@ -43,17 +43,18 @@ export default function Home() {
           <ul>
             {todos &&
               todos.map((todo) => (
-                <li key={todo.ID}>
-                  {todo.ID}
-                  {todo.Name}
-                  id:{todo.User.ID}
-                  name:{todo.User.Name}
-                  <img
-                    src={todo.User.Image}
-                    alt="user image"
-                    width={100}
-                    height={100}
-                  />
+                <li key={todo.ID} className="border-t-2">
+                  {/* {todo.ID} */}
+                  <p>
+                    <img
+                      src={todo.User.Image}
+                      alt="user image"
+                      width={100}
+                      height={100}
+                    />
+                    user name:{todo.User.Name}
+                  </p>
+                  todo name:{todo.Name}
                   <button
                     onClick={async () => {
                       await api.delete(
