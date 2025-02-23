@@ -34,16 +34,19 @@ func Init() {
 
 func initTable() error {
 	query := `
-	CREATE TABLE IF NOT EXISTS todos (
-		id SERIAL PRIMARY KEY,
-		name TEXT NOT NULL
-	);
-
 	CREATE TABLE IF NOT EXISTS users (
 		id SERIAL PRIMARY KEY,
 		name TEXT,
 		email TEXT UNIQUE NOT NULL,
 		image TEXT,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);
+
+	CREATE TABLE IF NOT EXISTS todos (
+		id SERIAL PRIMARY KEY,
+		name TEXT NOT NULL,
+		user_id INTEGER REFERENCES users(id),
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	);`

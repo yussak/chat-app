@@ -13,7 +13,14 @@ export default function Home() {
 
   const fetchtodos = () => api.get("http://localhost:8080/todos");
   const postMessage = (name: string) =>
-    api.post("http://localhost:8080/todos", { name });
+    api.post("http://localhost:8080/todos", {
+      name,
+      user: {
+        id: session?.user?.id,
+        name: session?.user?.name,
+        image: session?.user?.image,
+      },
+    });
 
   useEffect(() => {
     fetchtodos().then((res) => setTodos(res.data));
@@ -39,6 +46,14 @@ export default function Home() {
                 <li key={todo.ID}>
                   {todo.ID}
                   {todo.Name}
+                  id:{todo.User.ID}
+                  name:{todo.User.Name}
+                  <img
+                    src={todo.User.Image}
+                    alt="user image"
+                    width={100}
+                    height={100}
+                  />
                   <button
                     onClick={async () => {
                       await api.delete(

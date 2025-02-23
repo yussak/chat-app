@@ -9,7 +9,12 @@ import (
 )
 
 func ListTodos(c echo.Context) error {
-	rows, err := db.DB.Query("SELECT id, name FROM todos")
+	query := `
+	SELECT t.id, t.name, u.id, u.name, u.image
+		FROM todos t 
+		LEFT JOIN users u ON t.user_id = u.id
+	`
+	rows, err := db.DB.Query(query)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー")
 	}
@@ -19,9 +24,17 @@ func ListTodos(c echo.Context) error {
 
 	for rows.Next() {
 		todo := models.Todo{}
-		if err := rows.Scan(&todo.ID, &todo.Name); err != nil {
+		user := models.User{}
+		if err := rows.Scan(
+			&todo.ID, 
+			&todo.Name, 
+			&user.ID, 
+			&user.Name, 
+			&user.Image,
+		); err != nil {
 			return c.String(http.StatusInternalServerError, "データ取得エラー")
 		}
+		todo.User = user
 		todos = append(todos, todo)
 	}
 
@@ -42,8 +55,9 @@ func AddTodo(c echo.Context) error {
 	// TodosテーブルにINSERTして、INSERTしたレコードのIDを取得
 	var insertedID int
 	err := db.DB.QueryRow(
-		"INSERT INTO Todos (name) VALUES ($1) RETURNING id",
+		"INSERT INTO todos (name, user_id) VALUES ($1, $2) RETURNING id",
 		req.Name,
+		req.User.ID,
 	).Scan(&insertedID)
 
 	if err != nil {
@@ -54,6 +68,7 @@ func AddTodo(c echo.Context) error {
 	newTodo := models.Todo{
 		ID:   insertedID,
 		Name: req.Name,
+		User: req.User,
 	}
 
 	return c.JSON(http.StatusOK, newTodo)
