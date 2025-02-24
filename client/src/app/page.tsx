@@ -3,12 +3,14 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { api } from "./lib/api-client";
+import EmojiPicker from "emoji-picker-react";
 
 export default function Home() {
   const { data: session } = useSession();
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [showPicker, setShowPicker] = useState(false);
 
   const fetchMessages = () => api.get("/messages");
   const postMessage = (content: string) =>
@@ -45,7 +47,13 @@ export default function Home() {
       console.error("リアクションの追加に失敗しました", error);
     }
   };
-  // console.log(messages);
+
+  const handleEmojiSelect = (messageId: string) => (emoji: string) => {
+    handleAddReaction(messageId, emoji);
+    setShowPicker(false);
+  };
+
+  console.log(messages);
   return (
     <div>
       {session ? (
@@ -69,15 +77,34 @@ export default function Home() {
                   </p>
                   message content:{message.Content}
                   {/* TODO:任意のリアクションを表示可能にしたい */}
+                  <button onClick={() => setShowPicker(!showPicker)}>
+                    botan
+                  </button>
+                  {/* <EmojiPicker onEmo /> */}
+                  {showPicker && (
+                    <div
+                      style={{ position: "absolute", top: "40px", zIndex: 10 }}
+                    >
+                      <EmojiPicker
+                        onEmojiClick={(emojiData) => {
+                          handleEmojiSelect(message.ID)(emojiData.emoji);
+                        }}
+                      />
+                    </div>
+                  )}
                   <div className="flex gap-2">
-                    <button onClick={() => handleAddReaction(message.ID, "👍")}>
-                      👍 {JSON.parse(message.reactions)["👍"] || 0}
-                    </button>
-                    <button onClick={() => handleAddReaction(message.ID, "❤️")}>
-                      ❤️ {JSON.parse(message.reactions)["❤️"] || 0}
-                    </button>
-                    <button onClick={() => handleAddReaction(message.ID, "😄")}>
-                      😄 {JSON.parse(message.reactions)["😄"] || 0}
+                    {Object.entries(JSON.parse(message.reactions)).map(
+                      ([emoji, count]) => (
+                        <button
+                          key={emoji}
+                          onClick={() => handleAddReaction(message.ID, emoji)}
+                        >
+                          {emoji} {count}
+                        </button>
+                      )
+                    )}
+                    <button onClick={() => setShowPicker(!showPicker)}>
+                      + 追加
                     </button>
                   </div>
                   <button
