@@ -10,7 +10,6 @@ export default function Home() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
-  // TODO;これ/messagesとかけないかを確認
   const fetchMessages = () => api.get("/messages");
   const postMessage = (content: string) =>
     api.post("/messages", {
