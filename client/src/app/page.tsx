@@ -56,13 +56,11 @@ export default function Home() {
   };
 
   const handleStrikethrough = () => {
-    const inputElement = document.querySelector(
-      'input[type="text"]'
-    ) as HTMLInputElement;
-    if (!inputElement) return;
+    const textArea = document.querySelector("textarea") as HTMLTextAreaElement;
+    if (!textArea) return;
 
-    const start = inputElement.selectionStart;
-    const end = inputElement.selectionEnd;
+    const start = textArea.selectionStart;
+    const end = textArea.selectionEnd;
 
     if (start === null || end === null || start === end) return;
 
@@ -75,7 +73,6 @@ export default function Home() {
 
   // console.log(messages);
 
-  // TODO: ## a と入力したらコメント扱いになるのか何も表示されないので対処
   // TODO: pickerで追加したら他のmessageに追加されてしまうので治す
   return (
     <div>
@@ -140,8 +137,7 @@ export default function Home() {
           </ul>
 
           <div>
-            <input
-              type="text"
+            <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="メッセージを入力..."
