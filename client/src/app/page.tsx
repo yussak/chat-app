@@ -12,7 +12,7 @@ export default function Home() {
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [showPicker, setShowPicker] = useState(false);
+  const [activePickerId, setActivePickerId] = useState<number | null>(null);
 
   const fetchMessages = () => api.get("/messages");
   const postMessage = (content: string) =>
@@ -52,7 +52,7 @@ export default function Home() {
 
   const handleEmojiSelect = (messageId: string) => (emoji: string) => {
     handleAddReaction(messageId, emoji);
-    setShowPicker(false);
+    setActivePickerId(null);
   };
 
   const handleStrikethrough = () => {
@@ -72,8 +72,6 @@ export default function Home() {
   };
 
   // console.log(messages);
-
-  // TODO: pickerで追加したら他のmessageに追加されてしまうので治す
   return (
     <div>
       {session ? (
@@ -98,7 +96,7 @@ export default function Home() {
                   <Markdown remarkPlugins={[remarkGfm]}>
                     {message.Content}
                   </Markdown>
-                  {showPicker && (
+                  {activePickerId === message.ID && (
                     <div
                       style={{ position: "absolute", top: "40px", zIndex: 10 }}
                     >
@@ -120,7 +118,8 @@ export default function Home() {
                         </button>
                       )
                     )}
-                    <button onClick={() => setShowPicker(!showPicker)}>
+                    <button onClick={() => setActivePickerId(message.ID)}>
+                      {/* <button onClick={() => setShowPicker(!showPicker)}> */}
                       + 追加
                     </button>
                   </div>
