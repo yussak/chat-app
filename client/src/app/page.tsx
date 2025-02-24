@@ -11,9 +11,9 @@ export default function Home() {
   const [input, setInput] = useState("");
 
   // TODO;これ/messagesとかけないかを確認
-  const fetchMessages = () => api.get("http://localhost:8080/messages");
+  const fetchMessages = () => api.get("/messages");
   const postMessage = (content: string) =>
-    api.post("http://localhost:8080/messages", {
+    api.post("/messages", {
       content,
       user: {
         id: session?.user?.id,
@@ -35,7 +35,7 @@ export default function Home() {
 
   const handleAddReaction = async (messageId: string, emoji: string) => {
     try {
-      await api.post(`http://localhost:8080/messages/${messageId}/reactions`, {
+      await api.post(`/messages/${messageId}/reactions`, {
         user_id: session?.user?.id,
         emoji,
       });
@@ -83,9 +83,7 @@ export default function Home() {
                   </div>
                   <button
                     onClick={async () => {
-                      await api.delete(
-                        `http://localhost:8080/messages/${message.ID}`
-                      );
+                      await api.delete(`/messages/${message.ID}`);
                       setMessages(messages.filter((t) => t.ID !== message.ID));
                     }}
                   >
