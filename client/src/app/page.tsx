@@ -4,6 +4,8 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { api } from "./lib/api-client";
 import EmojiPicker from "emoji-picker-react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -53,7 +55,27 @@ export default function Home() {
     setShowPicker(false);
   };
 
-  console.log(messages);
+  const handleStrikethrough = () => {
+    const inputElement = document.querySelector(
+      'input[type="text"]'
+    ) as HTMLInputElement;
+    if (!inputElement) return;
+
+    const start = inputElement.selectionStart;
+    const end = inputElement.selectionEnd;
+
+    if (start === null || end === null || start === end) return;
+
+    const selectedText = input.slice(start, end);
+    const newText =
+      input.slice(0, start) + `~~${selectedText}~~` + input.slice(end);
+
+    setInput(newText);
+  };
+
+  // console.log(messages);
+
+  // TODO: ## a と入力したらコメント扱いになるのか何も表示されないので対処
   return (
     <div>
       {session ? (
@@ -75,12 +97,13 @@ export default function Home() {
                     />
                     user name:{message.User.Name}
                   </p>
-                  message content:{message.Content}
+                  <Markdown remarkPlugins={[remarkGfm]}>
+                    {message.Content}
+                  </Markdown>
                   {/* TODO:任意のリアクションを表示可能にしたい */}
                   <button onClick={() => setShowPicker(!showPicker)}>
                     botan
                   </button>
-                  {/* <EmojiPicker onEmo /> */}
                   {showPicker && (
                     <div
                       style={{ position: "absolute", top: "40px", zIndex: 10 }}
@@ -126,6 +149,7 @@ export default function Home() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="メッセージを入力..."
             />
+            <button onClick={handleStrikethrough}>打ち消し線</button>
             <button onClick={handleSend}>送信</button>
           </div>
         </>
