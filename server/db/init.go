@@ -49,6 +49,15 @@ func initTable() error {
 		user_id INTEGER REFERENCES users(id),
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);
+
+	CREATE TABLE IF NOT EXISTS reactions (
+		id SERIAL PRIMARY KEY,
+		message_id INTEGER REFERENCES messages(id),
+		user_id INTEGER REFERENCES users(id),
+		emoji TEXT NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		UNIQUE (message_id, user_id, emoji)
 	);`
 
 	_, err := DB.Exec(query)

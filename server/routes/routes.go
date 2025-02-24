@@ -20,4 +20,11 @@ func SetupRoutes(e *echo.Echo) {
 	e.DELETE("/messages/:id", func(c echo.Context) error {
 		return controllers.DeleteMessage(c)
 	})
+
+	e.GET("/messages/:id/reactions", func(c echo.Context) error {
+		return controllers.ListReactions(c)
+	})
+	e.POST("/messages/:id/reactions", func(c echo.Context) error {
+		return controllers.AddReaction(c)
+	})
 }

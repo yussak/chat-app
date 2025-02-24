@@ -10,6 +10,7 @@ export default function Home() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
+  // TODO;これ/messagesとかけないかを確認
   const fetchMessages = () => api.get("http://localhost:8080/messages");
   const postMessage = (content: string) =>
     api.post("http://localhost:8080/messages", {
@@ -32,6 +33,20 @@ export default function Home() {
     setInput("");
   };
 
+  const handleAddReaction = async (messageId: string, emoji: string) => {
+    try {
+      await api.post(`http://localhost:8080/messages/${messageId}/reactions`, {
+        user_id: session?.user?.id,
+        emoji,
+      });
+      // リアクション追加後にメッセージ一覧を再取得
+      const res = await fetchMessages();
+      setMessages(res.data);
+    } catch (error) {
+      console.error("リアクションの追加に失敗しました", error);
+    }
+  };
+  // console.log(messages);
   return (
     <div>
       {session ? (
@@ -54,6 +69,18 @@ export default function Home() {
                     user name:{message.User.Name}
                   </p>
                   message content:{message.Content}
+                  {/* TODO:任意のリアクションを表示可能にしたい */}
+                  <div className="flex gap-2">
+                    <button onClick={() => handleAddReaction(message.ID, "👍")}>
+                      👍 {JSON.parse(message.reactions)["👍"] || 0}
+                    </button>
+                    <button onClick={() => handleAddReaction(message.ID, "❤️")}>
+                      ❤️ {JSON.parse(message.reactions)["❤️"] || 0}
+                    </button>
+                    <button onClick={() => handleAddReaction(message.ID, "😄")}>
+                      😄 {JSON.parse(message.reactions)["😄"] || 0}
+                    </button>
+                  </div>
                   <button
                     onClick={async () => {
                       await api.delete(
