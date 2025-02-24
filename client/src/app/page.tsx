@@ -93,6 +93,7 @@ export default function Home() {
                     />
                     user name:{message.User.Name}
                   </p>
+                  <p>created at: {message.CreatedAt}</p>
                   <Markdown remarkPlugins={[remarkGfm]}>
                     {message.Content}
                   </Markdown>

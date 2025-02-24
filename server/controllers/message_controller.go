@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"server/db"
 	"server/models"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -13,6 +14,7 @@ func ListMessages(c echo.Context) error {
 		SELECT 
 			m.id, 
 			m.content, 
+			m.created_at,
 			u.id, 
 			u.name, 
 			u.image,
@@ -27,7 +29,7 @@ func ListMessages(c echo.Context) error {
 			FROM reactions
 			GROUP BY message_id, emoji
 		) r ON m.id = r.message_id
-		GROUP BY m.id, m.content, u.id, u.name, u.image
+		GROUP BY m.id, m.content, m.created_at, u.id, u.name, u.image
 	`
 	rows, err := db.DB.Query(query)
 	if err != nil {
@@ -44,6 +46,7 @@ func ListMessages(c echo.Context) error {
 		if err := rows.Scan(
 			&message.ID, 
 			&message.Content, 
+			&message.CreatedAt,
 			&user.ID, 
 			&user.Name, 
 			&user.Image,
@@ -72,11 +75,14 @@ func AddMessage(c echo.Context) error {
 
 	// MessagesテーブルにINSERTして、INSERTしたレコードのIDを取得
 	var insertedID int
-	err := db.DB.QueryRow(
-		"INSERT INTO messages (content, user_id) VALUES ($1, $2) RETURNING id",
+	var createdAt time.Time
+	err := db.DB.QueryRow(`
+		INSERT INTO messages (content, user_id) 
+		VALUES ($1, $2) 
+		RETURNING id, created_at`,
 		req.Content,
 		req.User.ID,
-	).Scan(&insertedID)
+	).Scan(&insertedID, &createdAt)
 
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー")
@@ -88,6 +94,7 @@ func AddMessage(c echo.Context) error {
 		Content: req.Content,
 		User: req.User,
 		Reactions: "{}",
+		CreatedAt: createdAt,
 	}
 
 	return c.JSON(http.StatusOK, newMessage)

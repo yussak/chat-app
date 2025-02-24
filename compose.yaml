@@ -36,6 +36,8 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: db
+      TZ: Asia/Tokyo
+      PGTZ: Asia/Tokyo
     volumes:
       - db-data:/var/lib/postgresql/data
 
