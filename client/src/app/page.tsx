@@ -76,6 +76,7 @@ export default function Home() {
   // console.log(messages);
 
   // TODO: ## a と入力したらコメント扱いになるのか何も表示されないので対処
+  // TODO: pickerで追加したら他のmessageに追加されてしまうので治す
   return (
     <div>
       {session ? (
@@ -100,10 +101,6 @@ export default function Home() {
                   <Markdown remarkPlugins={[remarkGfm]}>
                     {message.Content}
                   </Markdown>
-                  {/* TODO:任意のリアクションを表示可能にしたい */}
-                  <button onClick={() => setShowPicker(!showPicker)}>
-                    botan
-                  </button>
                   {showPicker && (
                     <div
                       style={{ position: "absolute", top: "40px", zIndex: 10 }}
@@ -136,7 +133,7 @@ export default function Home() {
                       setMessages(messages.filter((t) => t.ID !== message.ID));
                     }}
                   >
-                    del
+                    delete
                   </button>
                 </li>
               ))}
