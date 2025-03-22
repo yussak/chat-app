@@ -27,4 +27,8 @@ func SetupRoutes(e *echo.Echo) {
 	e.POST("/messages/:id/reactions", func(c echo.Context) error {
 		return controllers.AddReaction(c)
 	})
+
+	e.POST("/workspaces", func(c echo.Context) error {
+		return controllers.CreateWorkspace(c)
+	})
 }
