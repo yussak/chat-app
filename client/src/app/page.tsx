@@ -14,8 +14,9 @@ export default function Home() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [activePickerId, setActivePickerId] = useState<number | null>(null);
-
+  const [workspaces, setWorkspaces] = useState([]);
   const fetchMessages = () => api.get("/messages");
+  const fetchWorkspaces = () => api.get("/workspaces");
   const postMessage = (content: string) =>
     api.post("/messages", {
       content,
@@ -28,7 +29,10 @@ export default function Home() {
 
   useEffect(() => {
     fetchMessages().then((res) => setMessages(res.data));
+    fetchWorkspaces().then((res) => setWorkspaces(res.data));
   }, []);
+
+  console.log(workspaces);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -84,7 +88,24 @@ export default function Home() {
             </div>
 
             <div className="mb-4">
+              {/* todo:nameにemail入ってしまうので修正 */}
               <Link href="/workspaces/new">ワークスペースを作成</Link>
+            </div>
+
+            <div className="mb-4">
+              <h2>ワークスペース一覧</h2>
+              <ul>
+                {workspaces.map((workspace) => (
+                  <li key={workspace.id}>
+                    {/* todo:詳細表示画面追加 */}
+                    {/* todo:自分がメンバーじゃないIDのときにnot foundとする */}
+                    {/* todo: idを数値にするのダメそうなので調べて対応 */}
+                    <Link href={`/workspaces/${workspace.id}`}>
+                      {workspace.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 

@@ -4,7 +4,7 @@ import "time"
 
 type Workspace struct {
 	ID int `json:"id"`
-	Email string `json:"email"`
+	Name string `json:"name"`
 	OwnerID int `json:"owner_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`

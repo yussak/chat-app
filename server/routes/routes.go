@@ -31,4 +31,8 @@ func SetupRoutes(e *echo.Echo) {
 	e.POST("/workspaces", func(c echo.Context) error {
 		return controllers.CreateWorkspace(c)
 	})
+
+	e.GET("/workspaces", func(c echo.Context) error {
+		return controllers.ListWorkspaces(c)
+	})
 }
