@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// TODO: ここでjson...としてないからフロントでID歳無いと取れないのかも知っれないので確認
 type User struct {
 	ID        int
 	Name      string
