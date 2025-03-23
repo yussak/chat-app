@@ -28,8 +28,7 @@ func ListWorkspaces(c echo.Context) error {
 	var workspaces []models.Workspace
 	for rows.Next() {
 		var workspace models.Workspace
-		if err := rows.Scan(&workspace.ID, &workspace.Name, &workspace.OwnerID, &workspace.CreatedAt, &workspace.UpdatedAt); err != nil {
-			// if err := rows.Scan(&workspace.ID, &workspace.Name, &workspace.OwnerID, &workspace.CreatedAt, &workspace.UpdatedAt); err != nil {
+		if err := rows.Scan(&workspace.ID, &workspace.Name, &workspace.OwnerID, &workspace.Theme, &workspace.CreatedAt, &workspace.UpdatedAt); err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to scan workspace"})
 		}
 		workspaces = append(workspaces, workspace)
