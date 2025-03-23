@@ -69,6 +69,7 @@ export default function NewWorkspace() {
     }
   };
 
+  // todo: step何番目かを表示
   const renderEmailForm = () => (
     <form className="mt-8 space-y-6" onSubmit={handleEmailSubmit}>
       <div>
@@ -89,9 +90,7 @@ export default function NewWorkspace() {
           placeholder="example@company.com"
         />
       </div>
-
       {error && <div className="text-red-600 text-sm">{error}</div>}
-
       <button
         type="submit"
         className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -103,13 +102,8 @@ export default function NewWorkspace() {
 
   const renderNameForm = () => (
     <form className="mt-8 space-y-6" onSubmit={handleNameSubmit}>
+      <p>手順 1/5</p>
       <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-gray-700"
-        >
-          ワークスペース名
-        </label>
         <input
           id="name"
           name="name"
@@ -118,20 +112,13 @@ export default function NewWorkspace() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          placeholder="例: プロジェクト名"
+          placeholder="例: ABC 営業部、ABC 社"
         />
       </div>
 
       {error && <div className="text-red-600 text-sm">{error}</div>}
 
       <div className="flex gap-4">
-        <button
-          type="button"
-          onClick={() => setStep("email")}
-          className="flex-1 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          戻る
-        </button>
         <button
           type="submit"
           className="flex-1 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -144,6 +131,7 @@ export default function NewWorkspace() {
 
   const renderDisplayNameForm = () => (
     <form className="mt-8 space-y-6" onSubmit={handleDisplayNameSubmit}>
+      <p>手順 2/5</p>
       <div>
         <label
           htmlFor="displayName"
@@ -167,17 +155,10 @@ export default function NewWorkspace() {
 
       <div className="flex gap-4">
         <button
-          type="button"
-          onClick={() => setStep("name")}
-          className="flex-1 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          戻る
-        </button>
-        <button
           type="submit"
           className="flex-1 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
-          作成
+          次へ
         </button>
       </div>
     </form>
@@ -186,11 +167,11 @@ export default function NewWorkspace() {
   const getStepTitle = () => {
     switch (step) {
       case "email":
-        return "メールアドレスを入力してワークスペースを作成してください";
+        return "メールアドレスを入力してください";
       case "name":
-        return "ワークスペースの名前を入力してください";
+        return "ワークスペース名を入力してください";
       case "displayName":
-        return "ワークスペースでの表示名を設定してください";
+        return "表示名を入力してください";
       default:
         return "";
     }
@@ -213,12 +194,7 @@ export default function NewWorkspace() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
         <div>
-          <h1 className="text-2xl font-bold text-center">
-            ワークスペースを作成
-          </h1>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            {getStepTitle()}
-          </p>
+          <h1 className="text-2xl font-bold text-center">{getStepTitle()}</h1>
         </div>
         {renderForm()}
       </div>
