@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 type Step = "email" | "name" | "displayName";
 
 // TODO:各ステップにバリデーション追加
+// TODO: 表示名を入力させるのはownerだからかというよりworkspaceに参加するときにやるべきな気がするので確認
 export default function NewWorkspace() {
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
@@ -41,6 +42,7 @@ export default function NewWorkspace() {
     setStep("displayName");
   };
 
+  // 表示名の設定はownerだからかというよりworkspaceに参加するときにやるべきな気がすると思ってるが、ワークスペース作成時には常に初めて参加なのでこれはこれで良さそう
   const handleDisplayNameSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");

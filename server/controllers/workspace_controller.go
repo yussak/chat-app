@@ -38,17 +38,32 @@ func ListWorkspaces(c echo.Context) error {
 
 func CreateWorkspace(c echo.Context) error {
 	var req struct {
-		Email string `json:"email"`
+		Email       string `json:"email"`
+		Name        string `json:"name"`
+		DisplayName string `json:"displayName"`
 	}
 
+	// user existsは/users/existsでチェックしてるのでこっちでは不要そう？いや必要そう
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid request"})
 	}
 
-	if req.Email == "" {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "email is required"})
+	if req.Email == "" || req.Name == "" || req.DisplayName == "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "メールアドレス、ワークスペース名、表示名は必須です",
+		})
 	}
 
+	// トランザクション開始
+	tx, err := db.DB.Begin()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "トランザクション開始エラー",
+		})
+	}
+	defer tx.Rollback()
+
+	// ユーザーを検索
 	user, err := models.FindUserByEmail(db.DB, req.Email)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find user"})
@@ -64,14 +79,39 @@ func CreateWorkspace(c echo.Context) error {
 	}
 
 	workspace := models.Workspace{
-		// Email:   req.Email,
 		OwnerID: ownerID,
+		Name:    req.Name,
 	}
 
 	query := `INSERT INTO workspaces (owner_id, name) VALUES ($1, $2) RETURNING id, created_at, updated_at`
-	err = db.DB.QueryRow(query, workspace.OwnerID, req.Email).Scan(&workspace.ID, &workspace.CreatedAt, &workspace.UpdatedAt)
+	err = tx.QueryRow(query, workspace.OwnerID, req.Name).Scan(&workspace.ID, &workspace.CreatedAt, &workspace.UpdatedAt)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to create workspace"})
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "ワークスペース作成エラー",
+		})
+	}
+
+	// ワークスペースメンバーを作成
+	workspaceMember := models.WorkspaceMember{
+		WorkspaceID: workspace.ID,
+		UserID:      user.ID,
+		DisplayName: req.DisplayName,
+		ImageURL:    user.Image,
+	}
+
+	query = `INSERT INTO workspace_members (workspace_id, user_id, display_name, image_url) VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at`
+	err = tx.QueryRow(query, workspaceMember.WorkspaceID, workspaceMember.UserID, workspaceMember.DisplayName, workspaceMember.ImageURL).Scan(&workspaceMember.ID, &workspaceMember.CreatedAt, &workspaceMember.UpdatedAt)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "ワークスペースメンバー作成エラー",
+		})
+	}
+
+	// トランザクションをコミット
+	if err := tx.Commit(); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "トランザクションコミットエラー",
+		})
 	}
 
 	return c.JSON(http.StatusOK, workspace)
