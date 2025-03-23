@@ -116,3 +116,34 @@ func CreateWorkspace(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, workspace)
 }
+
+func GetWorkspace(c echo.Context) error {
+	id := c.Param("id")
+	if id == "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "ID is required"})
+	}
+
+	query := `
+		SELECT 
+			id,
+			name,
+			owner_id,
+			created_at,
+			updated_at
+		FROM workspaces
+		WHERE id = $1
+	`
+	var workspace models.Workspace
+	err := db.DB.QueryRow(query, id).Scan(
+		&workspace.ID,
+		&workspace.Name,
+		&workspace.OwnerID,
+		&workspace.CreatedAt,
+		&workspace.UpdatedAt,
+	)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, map[string]string{"error": "workspace not found"})
+	}
+
+	return c.JSON(http.StatusOK, workspace)
+}

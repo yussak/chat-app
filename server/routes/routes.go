@@ -39,4 +39,8 @@ func SetupRoutes(e *echo.Echo) {
 	e.GET("/workspaces", func(c echo.Context) error {
 		return controllers.ListWorkspaces(c)
 	})
+
+	e.GET("/workspaces/:id", func(c echo.Context) error {
+		return controllers.GetWorkspace(c)
+	})
 }
