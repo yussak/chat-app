@@ -11,6 +11,10 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.SignInHandler(c)
 	})
 
+	e.GET("/users/exists", func(c echo.Context) error {
+		return controllers.EmailExistsHandler(c)
+	})
+
 	e.GET("/messages", func(c echo.Context) error {
 		return controllers.ListMessages(c)
 	})
@@ -28,7 +32,7 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.AddReaction(c)
 	})
 
-	e.POST("/workspaces", func(c echo.Context) error {
+		e.POST("/workspaces", func(c echo.Context) error {
 		return controllers.CreateWorkspace(c)
 	})
 

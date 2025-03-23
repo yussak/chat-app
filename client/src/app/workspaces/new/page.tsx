@@ -20,8 +20,7 @@ export default function NewWorkspace() {
     setError("");
 
     try {
-      // TODO:やってるのはget userなのでpostとかURLがおかしいんで直す
-      const response = await api.post(`/workspaces`, { email: email });
+      const response = await api.get(`/users/exists?email=${email}`);
       if (response.status === 200) {
         setStep("name");
       }
