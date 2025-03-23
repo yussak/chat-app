@@ -32,8 +32,6 @@ export default function Home() {
     fetchWorkspaces().then((res) => setWorkspaces(res.data));
   }, []);
 
-  console.log(workspaces);
-
   const handleSend = async () => {
     if (!input.trim()) return;
     const res = await postMessage(input);

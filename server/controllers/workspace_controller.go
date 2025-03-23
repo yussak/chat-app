@@ -10,7 +10,7 @@ import (
 
 func ListWorkspaces(c echo.Context) error {
 	query := `
-		SELECT 
+		SELECT
 			w.id,
 			w.name,
 			w.owner_id,
@@ -33,7 +33,7 @@ func ListWorkspaces(c echo.Context) error {
 		}
 		workspaces = append(workspaces, workspace)
 	}
-	return c.JSON(http.StatusOK, workspaces)	
+	return c.JSON(http.StatusOK, workspaces)
 }
 
 func CreateWorkspace(c echo.Context) error {
