@@ -114,25 +114,25 @@ export default function Home() {
                 {messages &&
                   messages.map((message) => (
                     <li
-                      key={message.ID}
+                      key={message.id}
                       className="border rounded-lg p-4 bg-white shadow-sm"
                     >
                       <div className="flex items-center gap-2 mb-2">
                         <img
-                          src={message.User.Image}
+                          src={message.user.image}
                           alt="user image"
                           className="w-10 h-10 rounded-full"
                         />
                         <span className="font-semibold">
-                          {message.User.Name}
+                          {message.user.name}
                         </span>
                         <span className="text-sm text-gray-500">
-                          {message.CreatedAt}
+                          {message.created_at}
                         </span>
                       </div>
                       <div className="mb-2">
                         <Markdown remarkPlugins={[remarkGfm]}>
-                          {message.Content}
+                          {message.content}
                         </Markdown>
                       </div>
                       <div className="flex items-center gap-2">
@@ -141,7 +141,7 @@ export default function Home() {
                             <button
                               key={emoji}
                               onClick={() =>
-                                handleAddReaction(message.ID, emoji)
+                                handleAddReaction(message.id, emoji)
                               }
                               className="px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
                             >
@@ -150,16 +150,16 @@ export default function Home() {
                           )
                         )}
                         <button
-                          onClick={() => setActivePickerId(message.ID)}
+                          onClick={() => setActivePickerId(message.id)}
                           className="px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
                         >
                           + 追加
                         </button>
                         <button
                           onClick={async () => {
-                            await api.delete(`/messages/${message.ID}`);
+                            await api.delete(`/messages/${message.id}`);
                             setMessages(
-                              messages.filter((t) => t.ID !== message.ID)
+                              messages.filter((t) => t.ID !== message.id)
                             );
                           }}
                           className="px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
@@ -167,11 +167,11 @@ export default function Home() {
                           delete
                         </button>
                       </div>
-                      {activePickerId === message.ID && (
+                      {activePickerId === message.id && (
                         <div className="absolute z-10">
                           <EmojiPicker
                             onEmojiClick={(emojiData) => {
-                              handleEmojiSelect(message.ID)(emojiData.emoji);
+                              handleEmojiSelect(message.id)(emojiData.emoji);
                             }}
                           />
                         </div>

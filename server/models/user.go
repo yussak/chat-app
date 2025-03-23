@@ -6,14 +6,13 @@ import (
 	"time"
 )
 
-// TODO: ここでjson...としてないからフロントでID歳無いと取れないのかも知っれないので確認
 type User struct {
-	ID        int
-	Name      string
-	Email     string
-	Image     string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        int    `json:"id"`
+	Name      string `json:"name"`
+	Email     string `json:"email"`
+	Image     string `json:"image"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 func FindUserByEmail(db *sql.DB, email string) (*User, error) {
