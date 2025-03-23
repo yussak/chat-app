@@ -8,6 +8,7 @@ import { NameForm } from "../components/NameForm";
 import { DisplayNameForm } from "../components/DisplayNameForm";
 import { InvitationForm } from "../components/InvitationForm";
 import { ThemeForm } from "../components/ThemeForm";
+import { CreateForm } from "../components/CreateForm";
 
 type Step = "email" | "name" | "displayName" | "invitation" | "theme" | "start";
 
@@ -150,16 +151,8 @@ export default function NewWorkspace() {
     />
   );
 
-  const renderStartForm = () => (
-    <form className="mt-8 space-y-6" onSubmit={handleStartSubmit}>
-      <p>ワークスペースの準備ができました！✨</p>
-      <button
-        type="submit"
-        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-      >
-        ワークスペースを開始する
-      </button>
-    </form>
+  const renderCreateForm = () => (
+    <CreateForm error={error} onSubmit={handleStartSubmit} />
   );
 
   const getStepTitle = () => {
@@ -194,7 +187,7 @@ export default function NewWorkspace() {
       case "theme":
         return renderThemeForm();
       case "start":
-        return renderStartForm();
+        return renderCreateForm();
       default:
         return null;
     }
