@@ -64,6 +64,7 @@ func initTable() error {
 		id SERIAL PRIMARY KEY,
     owner_id INTEGER REFERENCES users(id),
 		name TEXT NOT NULL,
+    theme TEXT NOT NULL,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	);

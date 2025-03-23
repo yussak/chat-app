@@ -4,7 +4,7 @@ import { api } from "@/app/lib/api-client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-type Step = "email" | "name" | "displayName";
+type Step = "email" | "name" | "displayName" | "invitation" | "theme" | "start";
 
 // TODO:各ステップにバリデーション追加
 // TODO: 表示名を入力させるのはownerだからかというよりworkspaceに参加するときにやるべきな気がするので確認
@@ -12,7 +12,10 @@ export default function NewWorkspace() {
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [invitation, setInvitation] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [theme, setTheme] = useState("");
+  const [start, setStart] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -51,6 +54,39 @@ export default function NewWorkspace() {
       setError("表示名を入力してください");
       return;
     }
+
+    setStep("invitation");
+  };
+
+  const handleInvitationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!invitation.trim()) {
+      setError("招待コードを入力してください");
+      return;
+    }
+
+    // TODO:招待できるように実装
+
+    setStep("theme");
+  };
+
+  const handleThemeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!theme.trim()) {
+      setError("テーマを入力してください");
+      return;
+    }
+
+    setStep("start");
+  };
+
+  const handleStartSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
 
     try {
       const response = await api.post("/workspaces", {
@@ -164,6 +200,89 @@ export default function NewWorkspace() {
     </form>
   );
 
+  const renderInvitationForm = () => (
+    <form className="mt-8 space-y-6" onSubmit={handleInvitationSubmit}>
+      <p>手順 3/5</p>
+      <div>
+        <label
+          htmlFor="invitation"
+          className="block text-sm font-medium text-gray-700"
+        >
+          一緒に仕事をする人をメールアドレスで追加する
+        </label>
+        <textarea
+          id="invitation"
+          name="invitation"
+          rows={3}
+          value={invitation}
+          onChange={(e) => setInvitation(e.target.value)}
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          placeholder="例: ellis@gmail.com、 maria@gmail.com"
+        />
+      </div>
+
+      {error && <div className="text-red-600 text-sm">{error}</div>}
+
+      <div className="flex gap-4">
+        <button
+          // type="submit"
+          className="flex-1 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          次へ（未実装）
+        </button>
+        <button
+          type="button"
+          onClick={() => setStep("theme")}
+          className="flex-1 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          この手順をスキップする
+        </button>
+      </div>
+    </form>
+  );
+
+  const renderThemeForm = () => (
+    <form className="mt-8 space-y-6" onSubmit={handleThemeSubmit}>
+      <p>手順 4/5</p>
+      <div>
+        <p className="block text-sm font-medium text-gray-700">
+          チームで取り組んでいることを教えてください。プロジェクト、キャンペーン、イベント、まとめようとしている案件など、いろいろなことが考えられます。
+        </p>
+        <input
+          id="theme"
+          name="theme"
+          type="text"
+          required
+          value={theme}
+          placeholder="例: 第４半期予算、秋のキャンペーン"
+          onChange={(e) => setTheme(e.target.value)}
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        />
+        {error && <div className="text-red-600 text-sm">{error}</div>}
+
+        <button
+          type="button"
+          onClick={() => setStep("start")}
+          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          次へ
+        </button>
+      </div>
+    </form>
+  );
+
+  const renderStartForm = () => (
+    <form className="mt-8 space-y-6" onSubmit={handleStartSubmit}>
+      <p>ワークスペースの準備ができました！✨</p>
+      <button
+        type="submit"
+        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        ワークスペースを開始する
+      </button>
+    </form>
+  );
+
   const getStepTitle = () => {
     switch (step) {
       case "email":
@@ -172,6 +291,12 @@ export default function NewWorkspace() {
         return "ワークスペース名を入力してください";
       case "displayName":
         return "表示名を入力してください";
+      case "invitation":
+        return `${name} チームにはほかに誰がいますか？`;
+      case "theme":
+        return `チームで今取り組んでいることは何ですか？`;
+      case "start":
+        return "ワークスペースを開始する";
       default:
         return "";
     }
@@ -185,6 +310,12 @@ export default function NewWorkspace() {
         return renderNameForm();
       case "displayName":
         return renderDisplayNameForm();
+      case "invitation":
+        return renderInvitationForm();
+      case "theme":
+        return renderThemeForm();
+      case "start":
+        return renderStartForm();
       default:
         return null;
     }
