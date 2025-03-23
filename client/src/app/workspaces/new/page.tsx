@@ -3,6 +3,7 @@
 import { api } from "@/app/lib/api-client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { EmailForm } from "../components/EmailForm";
 
 type Step = "email" | "name" | "displayName" | "invitation" | "theme" | "start";
 
@@ -15,7 +16,6 @@ export default function NewWorkspace() {
   const [invitation, setInvitation] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [theme, setTheme] = useState("");
-  const [start, setStart] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -105,35 +105,13 @@ export default function NewWorkspace() {
     }
   };
 
-  // todo: step何番目かを表示
   const renderEmailForm = () => (
-    <form className="mt-8 space-y-6" onSubmit={handleEmailSubmit}>
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-700"
-        >
-          メールアドレス
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          placeholder="example@company.com"
-        />
-      </div>
-      {error && <div className="text-red-600 text-sm">{error}</div>}
-      <button
-        type="submit"
-        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-      >
-        次へ
-      </button>
-    </form>
+    <EmailForm
+      email={email}
+      setEmail={setEmail}
+      error={error}
+      onSubmit={handleEmailSubmit}
+    />
   );
 
   const renderNameForm = () => (
