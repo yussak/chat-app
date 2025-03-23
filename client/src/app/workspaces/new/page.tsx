@@ -18,7 +18,6 @@ export default function NewWorkspace() {
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [invitation, setInvitation] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [theme, setTheme] = useState("");
   const [error, setError] = useState("");

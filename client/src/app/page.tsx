@@ -86,7 +86,6 @@ export default function Home() {
             </div>
 
             <div className="mb-4">
-              {/* todo:nameにemail入ってしまうので修正 */}
               <Link href="/workspaces/new">ワークスペースを作成</Link>
             </div>
 
@@ -96,7 +95,6 @@ export default function Home() {
                 {workspaces &&
                   workspaces.map((workspace) => (
                     <li key={workspace.id}>
-                      {/* todo:詳細表示画面追加 */}
                       {/* todo:自分がメンバーじゃないIDのときにnot foundとする */}
                       {/* todo: idを数値にするのダメそうなので調べて対応 */}
                       <Link href={`/workspaces/${workspace.id}`}>
