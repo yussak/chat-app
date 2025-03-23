@@ -93,16 +93,17 @@ export default function Home() {
             <div className="mb-4">
               <h2>ワークスペース一覧</h2>
               <ul>
-                {workspaces.map((workspace) => (
-                  <li key={workspace.id}>
-                    {/* todo:詳細表示画面追加 */}
-                    {/* todo:自分がメンバーじゃないIDのときにnot foundとする */}
-                    {/* todo: idを数値にするのダメそうなので調べて対応 */}
-                    <Link href={`/workspaces/${workspace.id}`}>
-                      {workspace.name}
-                    </Link>
-                  </li>
-                ))}
+                {workspaces &&
+                  workspaces.map((workspace) => (
+                    <li key={workspace.id}>
+                      {/* todo:詳細表示画面追加 */}
+                      {/* todo:自分がメンバーじゃないIDのときにnot foundとする */}
+                      {/* todo: idを数値にするのダメそうなので調べて対応 */}
+                      <Link href={`/workspaces/${workspace.id}`}>
+                        {workspace.name}
+                      </Link>
+                    </li>
+                  ))}
               </ul>
             </div>
           </div>

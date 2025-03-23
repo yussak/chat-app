@@ -14,6 +14,7 @@ func ListWorkspaces(c echo.Context) error {
 			w.id,
 			w.name,
 			w.owner_id,
+			w.theme,
 			w.created_at,
 			w.updated_at
 		FROM workspaces w
@@ -42,6 +43,7 @@ func CreateWorkspace(c echo.Context) error {
 		Email       string `json:"email"`
 		Name        string `json:"name"`
 		DisplayName string `json:"displayName"`
+		Theme       string `json:"theme"`
 	}
 
 	// user existsは/users/existsでチェックしてるのでこっちでは不要そう？いや必要そう
@@ -49,9 +51,9 @@ func CreateWorkspace(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid request"})
 	}
 
-	if req.Email == "" || req.Name == "" || req.DisplayName == "" {
+	if req.Email == "" || req.Name == "" || req.DisplayName == "" || req.Theme == "" {
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			"error": "メールアドレス、ワークスペース名、表示名は必須です",
+			"error": "メールアドレス、ワークスペース名、表示名、テーマは必須です",
 		})
 	}
 
@@ -82,10 +84,11 @@ func CreateWorkspace(c echo.Context) error {
 	workspace := models.Workspace{
 		OwnerID: ownerID,
 		Name:    req.Name,
+		Theme:   req.Theme,
 	}
 
-	query := `INSERT INTO workspaces (owner_id, name) VALUES ($1, $2) RETURNING id, created_at, updated_at`
-	err = tx.QueryRow(query, workspace.OwnerID, req.Name).Scan(&workspace.ID, &workspace.CreatedAt, &workspace.UpdatedAt)
+	query := `INSERT INTO workspaces (owner_id, name, theme) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at`
+	err = tx.QueryRow(query, workspace.OwnerID, req.Name, req.Theme).Scan(&workspace.ID, &workspace.CreatedAt, &workspace.UpdatedAt)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"error": "ワークスペース作成エラー",
@@ -129,6 +132,7 @@ func GetWorkspace(c echo.Context) error {
 			id,
 			name,
 			owner_id,
+			theme,
 			created_at,
 			updated_at
 		FROM workspaces
@@ -139,6 +143,7 @@ func GetWorkspace(c echo.Context) error {
 		&workspace.ID,
 		&workspace.Name,
 		&workspace.OwnerID,
+		&workspace.Theme,
 		&workspace.CreatedAt,
 		&workspace.UpdatedAt,
 	)

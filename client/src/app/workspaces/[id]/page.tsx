@@ -8,6 +8,7 @@ type Workspace = {
   id: number;
   name: string;
   owner_id: number;
+  theme: string;
 };
 
 export default function Workspace() {
@@ -41,6 +42,7 @@ export default function Workspace() {
         <p>ID: {workspace.id}</p>
         <p>名前: {workspace.name}</p>
         <p>オーナーID: {workspace.owner_id}</p>
+        <p>テーマ: {workspace.theme}</p>
       </div>
     </div>
   );

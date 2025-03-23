@@ -97,6 +97,7 @@ export default function NewWorkspace() {
         email,
         name,
         displayName,
+        theme,
       });
 
       if (response.status === 200) {
