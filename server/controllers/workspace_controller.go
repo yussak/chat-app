@@ -36,7 +36,6 @@ func ListWorkspaces(c echo.Context) error {
 	return c.JSON(http.StatusOK, workspaces)
 }
 
-// todo: theme保存できてないの直す
 func CreateWorkspace(c echo.Context) error {
 	var req struct {
 		Email       string `json:"email"`
