@@ -50,3 +50,29 @@ func SignInHandler(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, existingUser)
 }
+
+func EmailExistsHandler(c echo.Context) error {
+	email := c.QueryParam("email")
+	if email == "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "メールアドレスが必要です",
+		})
+	}
+
+	user, err := models.FindUserByEmail(db.DB, email)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "ユーザー検索エラー",
+		})
+	}
+
+	if user == nil {
+		return c.JSON(http.StatusNotFound, map[string]string{
+			"error": "ユーザーが見つかりません",
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]bool{
+		"exists": true,
+	})
+}

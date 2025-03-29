@@ -58,7 +58,27 @@ func initTable() error {
 		emoji TEXT NOT NULL,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		UNIQUE (message_id, user_id, emoji)
-	);`
+	);
+  
+  CREATE TABLE IF NOT EXISTS workspaces (
+		id SERIAL PRIMARY KEY,
+    owner_id INTEGER REFERENCES users(id),
+		name TEXT NOT NULL,
+    theme TEXT NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);
+
+  CREATE TABLE IF NOT EXISTS workspace_members (
+		id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
+    workspace_id INTEGER REFERENCES workspaces(id),
+    display_name TEXT NOT NULL,
+    image_url TEXT,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);
+  `
 
 	_, err := DB.Exec(query)
 	log.Println("テーブルのセットアップ完了")
