@@ -36,7 +36,7 @@ func TestListWorkspaces(t *testing.T) {
 	_, err = testDB.Exec(`
 		INSERT INTO workspaces (name, owner_id, theme, created_at, updated_at)
 		VALUES ($1, $2, $3, NOW(), NOW())
-	`, "Test Workspace 1", userID, "light")
+	`, "Test Workspace 1", userID, "秋のキャンペーン")
 	assert.NoError(t, err)
 
 	// テスト後にデータを消す
@@ -69,5 +69,5 @@ func TestListWorkspaces(t *testing.T) {
 	workspace := workspaces[0]
 	assert.Equal(t, "Test Workspace 1", workspace.Name)
 	assert.Equal(t, userID, workspace.OwnerID)
-	assert.Equal(t, "light", workspace.Theme)
+	assert.Equal(t, "秋のキャンペーン", workspace.Theme)
 } 
