@@ -3,7 +3,18 @@
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 
-export default function Sidebar({ workspaces }) {
+type Workspace = {
+  id: number;
+  name: string;
+  owner_id: number;
+  theme: string;
+};
+
+interface SidebarProps {
+  workspaces: Workspace[];
+}
+
+export default function Sidebar({ workspaces }: SidebarProps) {
   const { data: session } = useSession();
 
   return (
