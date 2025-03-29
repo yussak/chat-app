@@ -1,12 +1,12 @@
 "use client";
 
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { api } from "./lib/api-client";
 import EmojiPicker from "emoji-picker-react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import Link from "next/link";
+import Sidebar from "./components/Sidebar";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -78,33 +78,7 @@ export default function Home() {
     <div className="min-h-screen">
       {session ? (
         <div className="flex h-screen">
-          {/* サイドバー */}
-          <div className="w-3/10 bg-gray-100 p-4 border-r">
-            <div className="flex justify-between items-center mb-4">
-              <h1>Welcome, {session.user?.name}</h1>
-              <button onClick={() => signOut()}>Sign out</button>
-            </div>
-
-            <div className="mb-4">
-              <Link href="/workspaces/new">ワークスペースを作成</Link>
-            </div>
-
-            <div className="mb-4">
-              <h2>ワークスペース一覧</h2>
-              <ul>
-                {workspaces &&
-                  workspaces.map((workspace) => (
-                    <li key={workspace.id}>
-                      {/* todo:自分がメンバーじゃないIDのときにnot foundとする */}
-                      {/* todo: idを数値にするのダメそうなので調べて対応 */}
-                      <Link href={`/workspaces/${workspace.id}`}>
-                        {workspace.name}
-                      </Link>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          </div>
+          <Sidebar workspaces={workspaces} />
 
           {/* メインコンテンツ */}
           <div className="w-7/10 flex flex-col">
