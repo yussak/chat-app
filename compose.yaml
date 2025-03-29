@@ -40,6 +40,14 @@ services:
       PGTZ: Asia/Tokyo
     volumes:
       - db-data:/var/lib/postgresql/data
+  test_db:
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: test_db
 
 volumes:
   db-data:
