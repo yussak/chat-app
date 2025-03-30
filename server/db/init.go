@@ -78,6 +78,23 @@ func initTable() error {
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	);
+
+	CREATE TABLE IF NOT EXISTS channels (
+		id SERIAL PRIMARY KEY,
+		workspace_id INTEGER REFERENCES workspaces(id),
+		name TEXT NOT NULL,
+		is_public BOOLEAN NOT NULL DEFAULT TRUE,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);
+
+	CREATE TABLE IF NOT EXISTS channel_members (
+		id SERIAL PRIMARY KEY,
+		channel_id INTEGER REFERENCES channels(id),
+		user_id INTEGER REFERENCES users(id),
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);
   `
 
 	_, err := DB.Exec(query)

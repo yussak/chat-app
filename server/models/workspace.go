@@ -3,12 +3,17 @@ package models
 import "time"
 
 type Workspace struct {
-	ID int `json:"id"`
-	Name string `json:"name"`
-	OwnerID int `json:"owner_id"`
-	Theme string `json:"theme"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	OwnerID   int       `json:"ownerId"`
+	Theme     string    `json:"theme"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type WorkspaceWithChannels struct {
+	Workspace
+	Channels []Channel `json:"channels"`
 }
 
 type WorkspaceMember struct {
