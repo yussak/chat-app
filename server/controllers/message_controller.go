@@ -120,11 +120,29 @@ func DeleteMessage(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "IDが空です")
 	}
 
-	// データベースから削除
-	_, err := db.DB.Exec("DELETE FROM messages WHERE id = $1", id)
+	// トランザクションを開始
+	tx, err := db.DB.Begin()
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "データベースエラー")
+		return c.String(http.StatusInternalServerError, "トランザクション開始エラー")
+	}
+	defer tx.Rollback()
+
+	// まずリアクションを削除
+	_, err = tx.Exec("DELETE FROM reactions WHERE message_id = $1", id)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "リアクション削除エラー")
 	}
 
-	return c.String(http.StatusOK, "Messageが削除されました")
+	// メッセージを削除
+	_, err = tx.Exec("DELETE FROM messages WHERE id = $1", id)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "メッセージ削除エラー")
+	}
+
+	// トランザクションをコミット
+	if err := tx.Commit(); err != nil {
+		return c.String(http.StatusInternalServerError, "トランザクションコミットエラー")
+	}
+
+	return c.String(http.StatusOK, "メッセージとリアクションが削除されました")
 }
