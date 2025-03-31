@@ -36,7 +36,6 @@ func CreateUser(db *sql.DB, user *User) error {
 }
 
 func UpdateUser(db *sql.DB, user *User) error {
-	query := `UPDATE users SET name=$1, image=$2, updated_at=NOW() WHERE email=$3`
-	_, err := db.Exec(query, user.Name, user.Image, user.Email)
-	return err
+	query := `UPDATE users SET name=$1, image=$2, updated_at=NOW() WHERE email=$3 RETURNING id`
+	return db.QueryRow(query, user.Name, user.Image, user.Email).Scan(&user.ID)
 }

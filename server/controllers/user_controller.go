@@ -36,7 +36,6 @@ func SignInHandler(c echo.Context) error {
 		log.Printf("新規ユーザー作成完了: ID=%d", user.ID)
 		existingUser = &user
 	} else {
-		log.Println("既存ユーザーを更新します")
 		// 既存ユーザーの更新
 		if err := models.UpdateUser(db.DB, &user); err != nil {
 			log.Printf("ユーザー更新エラー: %v", err)
