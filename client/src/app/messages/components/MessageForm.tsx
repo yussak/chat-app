@@ -1,8 +1,8 @@
 import { FormEvent } from "react";
 
 type MessageFormProps = {
-  input: string;
-  setInput: (name: string) => void;
+  message: string;
+  setMessage: (name: string) => void;
   handleStrikethrough: () => void;
   handleSend: () => void;
   error: string;
@@ -10,8 +10,8 @@ type MessageFormProps = {
 };
 
 export const MessageForm = ({
-  input,
-  setInput,
+  message,
+  setMessage,
   handleStrikethrough,
   handleSend,
   error,
@@ -20,8 +20,8 @@ export const MessageForm = ({
   <form className="border-t p-4 bg-white" onSubmit={onSubmit}>
     <div className="flex gap-2">
       <textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
         placeholder="メッセージを入力..."
         className="flex-1 p-2 border rounded-lg resize-none"
         rows={3}

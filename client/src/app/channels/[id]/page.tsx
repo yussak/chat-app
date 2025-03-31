@@ -34,7 +34,7 @@ export default function Channel() {
 
   const [channel, setChannel] = useState<Channel | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
+  const [message, setMessage] = useState("");
   const [activePickerId, setActivePickerId] = useState<number | null>(null);
   const fetchMessages = () => api.get(`/messages?channel_id=${id}`);
   const postMessage = (content: string) =>
@@ -58,10 +58,10 @@ export default function Channel() {
   }, [id]);
 
   const handleSend = async () => {
-    if (!input.trim()) return;
-    const res = await postMessage(input);
+    if (!message.trim()) return;
+    const res = await postMessage(message);
     setMessages([...messages, res.data]);
-    setInput("");
+    setMessage("");
   };
 
   const handleStrikethrough = () => {
@@ -73,11 +73,11 @@ export default function Channel() {
 
     if (start === null || end === null || start === end) return;
 
-    const selectedText = input.slice(start, end);
+    const selectedText = message.slice(start, end);
     const newText =
-      input.slice(0, start) + `~~${selectedText}~~` + input.slice(end);
+      message.slice(0, start) + `~~${selectedText}~~` + message.slice(end);
 
-    setInput(newText);
+    setMessage(newText);
   };
 
   const handleAddReaction = async (messageId: number, emoji: string) => {
@@ -175,8 +175,8 @@ export default function Channel() {
         </div>
 
         <MessageForm
-          input={input}
-          setInput={setInput}
+          message={message}
+          setMessage={setMessage}
           handleStrikethrough={handleStrikethrough}
           handleSend={handleSend}
           error={""}
