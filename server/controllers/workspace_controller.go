@@ -10,30 +10,11 @@ import (
 )
 
 func ListWorkspaces(c echo.Context) error {
-	query := `
-		SELECT
-			w.id,
-			w.name,
-			w.owner_id,
-			w.theme,
-			w.created_at,
-			w.updated_at
-		FROM workspaces w
-	`
-	rows, err := db.DB.Query(query)
+	workspaces, err := models.GetList()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find workspaces"})
 	}
-	defer rows.Close()
-	
-	var workspaces []models.Workspace
-	for rows.Next() {
-		var workspace models.Workspace
-		if err := rows.Scan(&workspace.ID, &workspace.Name, &workspace.OwnerID, &workspace.Theme, &workspace.CreatedAt, &workspace.UpdatedAt); err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to scan workspace"})
-		}
-		workspaces = append(workspaces, workspace)
-	}
+
 	return c.JSON(http.StatusOK, workspaces)
 }
 
