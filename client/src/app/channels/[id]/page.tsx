@@ -5,10 +5,9 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { api } from "@/app/lib/api-client";
 import { useSession } from "next-auth/react";
-import EmojiPicker from "emoji-picker-react";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+
 import { MessageForm } from "@/app/messages/components/MessageForm";
+import { MessageItem } from "@/app/messages/components/MessageItem";
 
 interface Message {
   id: number;
@@ -99,6 +98,11 @@ export default function Channel() {
     setActivePickerId(null);
   };
 
+  const handleDelete = async (messageId: number) => {
+    await api.delete(`/messages/${messageId}`);
+    setMessages(messages.filter((message) => message.id !== messageId));
+  };
+
   return (
     <div className="flex h-screen">
       <p>Channel {id}</p>
@@ -109,67 +113,19 @@ export default function Channel() {
           <ul className="space-y-4">
             {messages &&
               messages.map((message) => (
-                // todo message card
-                <li
-                  key={message.id}
-                  className="border rounded-lg p-4 bg-white shadow-sm"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <img
-                      src={message.user.image}
-                      alt="user image"
-                      className="w-10 h-10 rounded-full"
-                    />
-                    <span className="font-semibold">{message.user.name}</span>
-                    <span className="text-sm text-gray-500">
-                      {message.created_at}
-                    </span>
-                  </div>
-                  <div className="mb-2">
-                    <Markdown remarkPlugins={[remarkGfm]}>
-                      {message.content}
-                    </Markdown>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {Object.entries(JSON.parse(message.reactions)).map(
-                      ([emoji, count]) => (
-                        <button
-                          key={emoji}
-                          onClick={() => handleAddReaction(message.id, emoji)}
-                          className="px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
-                        >
-                          {emoji} {count}
-                        </button>
-                      )
-                    )}
-                    <button
-                      onClick={() => setActivePickerId(message.id)}
-                      className="px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
-                    >
-                      + 追加
-                    </button>
-                    <button
-                      onClick={async () => {
-                        await api.delete(`/messages/${message.id}`);
-                        setMessages(
-                          messages.filter((t) => t.id !== message.id)
-                        );
-                      }}
-                      className="px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
-                    >
-                      delete
-                    </button>
-                  </div>
-                  {activePickerId === message.id && (
-                    <div className="absolute z-10">
-                      <EmojiPicker
-                        onEmojiClick={(emojiData) => {
-                          handleEmojiSelect(message.id)(emojiData.emoji);
-                        }}
-                      />
-                    </div>
-                  )}
-                </li>
+                <MessageItem
+                  message={message}
+                  setMessage={setMessage}
+                  handleStrikethrough={handleStrikethrough}
+                  handleSend={handleSend}
+                  error={""}
+                  onSubmit={handleSend}
+                  handleAddReaction={handleAddReaction}
+                  activePickerId={activePickerId}
+                  setActivePickerId={setActivePickerId}
+                  handleDelete={handleDelete}
+                  handleEmojiSelect={handleEmojiSelect}
+                />
               ))}
           </ul>
         </div>
