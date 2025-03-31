@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"server/db"
 	"server/models"
@@ -109,6 +110,35 @@ func CreateWorkspace(c echo.Context) error {
 		})
 	}
 
+	// チャンネルを作成
+	channels := []models.Channel{
+		{
+			WorkspaceID: int64(workspace.ID),
+			Name:        fmt.Sprintf("all-%s", req.Name),
+			IsPublic:    true,
+		},
+		{
+			WorkspaceID: int64(workspace.ID),
+			Name:        "ソーシャル",
+			IsPublic:    true,
+		},
+		{
+			WorkspaceID: int64(workspace.ID),
+			Name:        req.Theme,
+			IsPublic:    true,
+		},
+	}
+
+	for _, channel := range channels {
+		query = `INSERT INTO channels (workspace_id, name, is_public) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at`
+		err = tx.QueryRow(query, channel.WorkspaceID, channel.Name, channel.IsPublic).Scan(&channel.ID, &channel.CreatedAt, &channel.UpdatedAt)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{
+				"error": "チャンネル作成エラー",
+			})
+		}
+	}
+
 	// トランザクションをコミット
 	if err := tx.Commit(); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
@@ -125,7 +155,8 @@ func GetWorkspace(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "ID is required"})
 	}
 
-	query := `
+	// ワークスペース情報を取得
+	workspaceQuery := `
 		SELECT 
 			id,
 			name,
@@ -137,7 +168,7 @@ func GetWorkspace(c echo.Context) error {
 		WHERE id = $1
 	`
 	var workspace models.Workspace
-	err := db.DB.QueryRow(query, id).Scan(
+	err := db.DB.QueryRow(workspaceQuery, id).Scan(
 		&workspace.ID,
 		&workspace.Name,
 		&workspace.OwnerID,
@@ -149,5 +180,46 @@ func GetWorkspace(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, map[string]string{"error": "workspace not found"})
 	}
 
-	return c.JSON(http.StatusOK, workspace)
+	// チャンネル情報を取得
+	channelsQuery := `
+		SELECT 
+			id,
+			workspace_id,
+			name,
+			is_public,
+			created_at,
+			updated_at
+		FROM channels
+		WHERE workspace_id = $1
+	`
+	rows, err := db.DB.Query(channelsQuery, id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to fetch channels"})
+	}
+	defer rows.Close()
+
+	var channels []models.Channel
+	for rows.Next() {
+		var channel models.Channel
+		err := rows.Scan(
+			&channel.ID,
+			&channel.WorkspaceID,
+			&channel.Name,
+			&channel.IsPublic,
+			&channel.CreatedAt,
+			&channel.UpdatedAt,
+		)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to scan channel"})
+		}
+		channels = append(channels, channel)
+	}
+
+	// ワークスペースとチャンネル情報を結合
+	response := models.WorkspaceWithChannels{
+		Workspace: workspace,
+		Channels:  channels,
+	}
+
+	return c.JSON(http.StatusOK, response)
 }

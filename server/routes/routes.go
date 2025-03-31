@@ -43,4 +43,8 @@ func SetupRoutes(e *echo.Echo) {
 	e.GET("/workspaces/:id", func(c echo.Context) error {
 		return controllers.GetWorkspace(c)
 	})
+
+	e.GET("/channels/:id", func(c echo.Context) error {
+		return controllers.GetChannel(c)
+	})
 }

@@ -10,11 +10,17 @@ import (
 )
 
 func ListMessages(c echo.Context) error {
+	channelID := c.QueryParam("channel_id")
+	if channelID == "" {
+		return c.String(http.StatusBadRequest, "ChannelIDが必要です")
+	}
+
 	query := `
 		SELECT 
 			m.id, 
 			m.content, 
 			m.created_at,
+			m.channel_id,
 			u.id, 
 			u.name, 
 			u.image,
@@ -29,9 +35,11 @@ func ListMessages(c echo.Context) error {
 			FROM reactions
 			GROUP BY message_id, emoji
 		) r ON m.id = r.message_id
-		GROUP BY m.id, m.content, m.created_at, u.id, u.name, u.image
+		WHERE m.channel_id = $1
+		GROUP BY m.id, m.content, m.created_at, m.channel_id, u.id, u.name, u.image
+		ORDER BY m.created_at ASC
 	`
-	rows, err := db.DB.Query(query)
+	rows, err := db.DB.Query(query, channelID)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー: " + err.Error())
 	}
@@ -44,11 +52,12 @@ func ListMessages(c echo.Context) error {
 		user := models.User{}
 		var reactionsJson []byte
 		if err := rows.Scan(
-			&message.ID, 
-			&message.Content, 
+			&message.ID,
+			&message.Content,
 			&message.CreatedAt,
-			&user.ID, 
-			&user.Name, 
+			&message.ChannelID,
+			&user.ID,
+			&user.Name,
 			&user.Image,
 			&reactionsJson,
 		); err != nil {
@@ -72,16 +81,20 @@ func AddMessage(c echo.Context) error {
 	if req.Content == "" {
 		return c.String(http.StatusBadRequest, "Messageが空です")
 	}
+	if req.ChannelID == 0 {
+		return c.String(http.StatusBadRequest, "ChannelIDが必要です")
+	}
 
 	// MessagesテーブルにINSERTして、INSERTしたレコードのIDを取得
 	var insertedID int
 	var createdAt time.Time
 	err := db.DB.QueryRow(`
-		INSERT INTO messages (content, user_id) 
-		VALUES ($1, $2) 
+		INSERT INTO messages (content, user_id, channel_id) 
+		VALUES ($1, $2, $3) 
 		RETURNING id, created_at`,
 		req.Content,
 		req.User.ID,
+		req.ChannelID,
 	).Scan(&insertedID, &createdAt)
 
 	if err != nil {
@@ -93,6 +106,7 @@ func AddMessage(c echo.Context) error {
 		ID:   insertedID,
 		Content: req.Content,
 		User: req.User,
+		ChannelID: req.ChannelID,
 		Reactions: "{}",
 		CreatedAt: createdAt,
 	}

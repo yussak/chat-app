@@ -22,8 +22,7 @@ const handler = NextAuth({
         });
 
         const dbUser = await response.json();
-        // セッションにDBのユーザーIDを保存するため
-        user.id = dbUser.ID;
+        user.id = dbUser.id;
         return true;
       } catch (error) {
         console.error("ユーザー情報送信失敗", error);
