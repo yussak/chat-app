@@ -92,6 +92,7 @@ export default function Channel() {
           <ul className="space-y-4">
             {messages &&
               messages.map((message) => (
+                // todo message card
                 <li
                   key={message.id}
                   className="border rounded-lg p-4 bg-white shadow-sm"
@@ -134,7 +135,7 @@ export default function Channel() {
                       onClick={async () => {
                         await api.delete(`/messages/${message.id}`);
                         setMessages(
-                          messages.filter((t) => t.ID !== message.id)
+                          messages.filter((t) => t.id !== message.id)
                         );
                       }}
                       className="px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
