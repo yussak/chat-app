@@ -114,6 +114,7 @@ export default function Channel() {
             {messages &&
               messages.map((message) => (
                 <MessageItem
+                  key={message.id}
                   message={message}
                   setMessage={setMessage}
                   handleStrikethrough={handleStrikethrough}
