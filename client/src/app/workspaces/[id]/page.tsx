@@ -3,12 +3,17 @@
 import { api } from "@/app/lib/api-client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 type Workspace = {
   id: number;
   name: string;
   owner_id: number;
   theme: string;
+  channels: {
+    id: number;
+    name: string;
+  }[];
 };
 
 export default function Workspace() {
@@ -23,6 +28,7 @@ export default function Workspace() {
         if (response.status === 200) {
           setWorkspace(response.data);
         }
+        console.log(response.data);
       } catch (error) {
         console.error("ワークスペースの取得に失敗しました:", error);
       }
@@ -36,13 +42,35 @@ export default function Workspace() {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">ワークスペース情報</h1>
-      <div className="space-y-2">
-        <p>ID: {workspace.id}</p>
-        <p>名前: {workspace.name}</p>
-        <p>オーナーID: {workspace.owner_id}</p>
-        <p>テーマ: {workspace.theme}</p>
+    <div className="flex h-screen">
+      {/* サイドバー */}
+      <div className="w-3/10 bg-gray-100 p-4 border-r">
+        <h2>チャンネル一覧</h2>
+        <ul>
+          {/* ここにchannel一覧を表示 */}
+          {workspace.channels &&
+            workspace.channels.map((channel) => (
+              <li key={channel.id}>
+                <Link
+                  href={`/channels/${channel.id}`}
+                  className="block hover:bg-gray-200 p-2 rounded"
+                >
+                  {channel.name}
+                </Link>
+              </li>
+            ))}
+        </ul>
+      </div>
+
+      {/* メインコンテンツ */}
+      <div className="w-7/10 p-4">
+        <h1 className="text-2xl font-bold mb-4">ワークスペース情報</h1>
+        <div className="space-y-2">
+          <p>ID: {workspace.id}</p>
+          <p>名前: {workspace.name}</p>
+          <p>オーナーID: {workspace.owner_id}</p>
+          <p>テーマ: {workspace.theme}</p>
+        </div>
       </div>
     </div>
   );
