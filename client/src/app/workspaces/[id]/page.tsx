@@ -28,7 +28,6 @@ export default function Workspace() {
         if (response.status === 200) {
           setWorkspace(response.data);
         }
-        console.log(response.data);
       } catch (error) {
         console.error("ワークスペースの取得に失敗しました:", error);
       }

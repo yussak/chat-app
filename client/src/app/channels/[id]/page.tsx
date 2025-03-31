@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import EmojiPicker from "emoji-picker-react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { MessageForm } from "@/app/messages/components/MessageForm";
 
 export default function Channel() {
   const { data: session } = useSession();
@@ -155,32 +156,14 @@ export default function Channel() {
           </ul>
         </div>
 
-        {/* メッセージ入力エリア */}
-        <div className="border-t p-4 bg-white">
-          <div className="flex gap-2">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="メッセージを入力..."
-              className="flex-1 p-2 border rounded-lg resize-none"
-              rows={3}
-            />
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={handleStrikethrough}
-                className="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200"
-              >
-                打ち消し線
-              </button>
-              <button
-                onClick={handleSend}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                送信
-              </button>
-            </div>
-          </div>
-        </div>
+        <MessageForm
+          input={input}
+          setInput={setInput}
+          handleStrikethrough={handleStrikethrough}
+          handleSend={handleSend}
+          error={""}
+          onSubmit={handleSend}
+        />
       </div>
     </div>
   );
