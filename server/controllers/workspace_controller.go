@@ -136,71 +136,10 @@ func GetWorkspace(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "ID is required"})
 	}
 
-	// ワークスペース情報を取得
-	workspaceQuery := `
-		SELECT 
-			id,
-			name,
-			owner_id,
-			theme,
-			created_at,
-			updated_at
-		FROM workspaces
-		WHERE id = $1
-	`
-	var workspace models.Workspace
-	err := db.DB.QueryRow(workspaceQuery, id).Scan(
-		&workspace.ID,
-		&workspace.Name,
-		&workspace.OwnerID,
-		&workspace.Theme,
-		&workspace.CreatedAt,
-		&workspace.UpdatedAt,
-	)
+	workspace, err := models.GetWorkspace(id)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, map[string]string{"error": "workspace not found"})
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to get workspace"})
 	}
 
-	// チャンネル情報を取得
-	channelsQuery := `
-		SELECT 
-			id,
-			workspace_id,
-			name,
-			is_public,
-			created_at,
-			updated_at
-		FROM channels
-		WHERE workspace_id = $1
-	`
-	rows, err := db.DB.Query(channelsQuery, id)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to fetch channels"})
-	}
-	defer rows.Close()
-
-	var channels []models.Channel
-	for rows.Next() {
-		var channel models.Channel
-		err := rows.Scan(
-			&channel.ID,
-			&channel.WorkspaceID,
-			&channel.Name,
-			&channel.IsPublic,
-			&channel.CreatedAt,
-			&channel.UpdatedAt,
-		)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to scan channel"})
-		}
-		channels = append(channels, channel)
-	}
-
-	// ワークスペースとチャンネル情報を結合
-	response := models.WorkspaceWithChannels{
-		Workspace: workspace,
-		Channels:  channels,
-	}
-
-	return c.JSON(http.StatusOK, response)
+	return c.JSON(http.StatusOK, workspace)
 }
