@@ -43,10 +43,17 @@ export default function Workspace() {
   return (
     <div className="flex h-screen">
       {/* サイドバー */}
-      <div className="w-3/10 bg-gray-100 p-4 border-r">
-        <h2>チャンネル一覧</h2>
+      <ul className="w-1/10 p-4 border-r">
+        <li>チーム名</li>
+        <li>ホーム</li>
+        <li>DM</li>
+        <li>アクティビティ</li>
+        <li>その他</li>
+      </ul>
+      <div className="w-2/10 bg-gray-100 p-4 border-r">
+        <h2>{workspace.name}</h2>
+        <p>チャンネル</p>
         <ul>
-          {/* ここにchannel一覧を表示 */}
           {workspace.channels &&
             workspace.channels.map((channel) => (
               <li key={channel.id}>
@@ -54,7 +61,7 @@ export default function Workspace() {
                   href={`/channels/${channel.id}`}
                   className="block hover:bg-gray-200 p-2 rounded"
                 >
-                  {channel.name}
+                  # {channel.name}
                 </Link>
               </li>
             ))}
