@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"server/db"
 	"server/models"
@@ -109,19 +110,33 @@ func CreateWorkspace(c echo.Context) error {
 		})
 	}
 
-	// generalチャンネルを作成
-	channel := models.Channel{
-		WorkspaceID: int64(workspace.ID),
-		Name:        "general",
-		IsPublic:    true,
+	// チャンネルを作成
+	channels := []models.Channel{
+		{
+			WorkspaceID: int64(workspace.ID),
+			Name:        fmt.Sprintf("all-%s", req.Name),
+			IsPublic:    true,
+		},
+		{
+			WorkspaceID: int64(workspace.ID),
+			Name:        "ソーシャル",
+			IsPublic:    true,
+		},
+		{
+			WorkspaceID: int64(workspace.ID),
+			Name:        req.Theme,
+			IsPublic:    true,
+		},
 	}
 
-	query = `INSERT INTO channels (workspace_id, name, is_public) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at`
-	err = tx.QueryRow(query, channel.WorkspaceID, channel.Name, channel.IsPublic).Scan(&channel.ID, &channel.CreatedAt, &channel.UpdatedAt)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"error": "チャンネル作成エラー",
-		})
+	for _, channel := range channels {
+		query = `INSERT INTO channels (workspace_id, name, is_public) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at`
+		err = tx.QueryRow(query, channel.WorkspaceID, channel.Name, channel.IsPublic).Scan(&channel.ID, &channel.CreatedAt, &channel.UpdatedAt)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{
+				"error": "チャンネル作成エラー",
+			})
+		}
 	}
 
 	// トランザクションをコミット
