@@ -29,7 +29,7 @@ type WorkspaceMember struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func GetList() ([]Workspace, error) {
+func ListWorkspaces() ([]Workspace, error) {
 query := `
 		SELECT
 			w.id,

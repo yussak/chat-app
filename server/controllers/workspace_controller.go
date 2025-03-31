@@ -10,7 +10,7 @@ import (
 )
 
 func ListWorkspaces(c echo.Context) error {
-	workspaces, err := models.GetList()
+	workspaces, err := models.ListWorkspaces()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find workspaces"})
 	}
