@@ -10,13 +10,30 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { MessageForm } from "@/app/messages/components/MessageForm";
 
+interface Message {
+  id: number;
+  content: string;
+  created_at: string;
+  user: {
+    id: number;
+    name: string;
+    image: string;
+  };
+}
+
+interface Channel {
+  id: number;
+  name: string;
+  created_at: string;
+}
+
 export default function Channel() {
   const { data: session } = useSession();
   const params = useParams();
   const id = params.id;
 
-  const [channel, setChannel] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const [channel, setChannel] = useState<Channel | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [activePickerId, setActivePickerId] = useState<number | null>(null);
   const fetchMessages = () => api.get(`/messages?channel_id=${id}`);
@@ -63,7 +80,7 @@ export default function Channel() {
     setInput(newText);
   };
 
-  const handleAddReaction = async (messageId: string, emoji: string) => {
+  const handleAddReaction = async (messageId: number, emoji: string) => {
     try {
       await api.post(`/messages/${messageId}/reactions`, {
         user_id: session?.user?.id,
@@ -77,7 +94,7 @@ export default function Channel() {
     }
   };
 
-  const handleEmojiSelect = (messageId: string) => (emoji: string) => {
+  const handleEmojiSelect = (messageId: number) => (emoji: string) => {
     handleAddReaction(messageId, emoji);
     setActivePickerId(null);
   };
