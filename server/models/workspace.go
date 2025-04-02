@@ -144,31 +144,9 @@ func CreateWorkspaceWithChannels(tx *sql.Tx, workspace *Workspace, displayName s
 		return fmt.Errorf("ワークスペースメンバー作成エラー: %w", err)
 	}
 
-	// チャンネルを作成
-	channels := []Channel{
-		{
-			WorkspaceID: int64(workspace.ID),
-			Name:        fmt.Sprintf("all-%s", workspace.Name),
-			IsPublic:    true,
-		},
-		{
-			WorkspaceID: int64(workspace.ID),
-			Name:        "ソーシャル",
-			IsPublic:    true,
-		},
-		{
-			WorkspaceID: int64(workspace.ID),
-			Name:        workspace.Theme,
-			IsPublic:    true,
-		},
-	}
-
-	for _, channel := range channels {
-		query = `INSERT INTO channels (workspace_id, name, is_public) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at`
-		err = tx.QueryRow(query, channel.WorkspaceID, channel.Name, channel.IsPublic).Scan(&channel.ID, &channel.CreatedAt, &channel.UpdatedAt)
-		if err != nil {
-			return fmt.Errorf("チャンネル作成エラー: %w", err)
-		}
+	err = CreateDefaultChannel(tx, workspace)
+	if err != nil {
+		return fmt.Errorf("チャンネル作成エラー: %w", err)
 	}
 
 	return nil
@@ -189,4 +167,34 @@ func CreateWorkspaceMember(tx *sql.Tx, workspace *Workspace, user *User, display
 		}
 
 		return nil
+}
+
+func CreateDefaultChannel(tx *sql.Tx, workspace *Workspace) error {
+	channels := []Channel{
+		{
+			WorkspaceID: int64(workspace.ID),
+			Name:        fmt.Sprintf("all-%s", workspace.Name),
+			IsPublic:    true,
+		},
+		{
+			WorkspaceID: int64(workspace.ID),
+			Name:        "ソーシャル",
+			IsPublic:    true,
+		},
+		{
+			WorkspaceID: int64(workspace.ID),
+			Name:        workspace.Theme,
+			IsPublic:    true,
+		},
+	}
+
+	for _, channel := range channels {
+		query := `INSERT INTO channels (workspace_id, name, is_public) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at`
+		err := tx.QueryRow(query, channel.WorkspaceID, channel.Name, channel.IsPublic).Scan(&channel.ID, &channel.CreatedAt, &channel.UpdatedAt)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
