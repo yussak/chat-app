@@ -138,16 +138,8 @@ func CreateWorkspaceWithChannels(tx *sql.Tx, workspace *Workspace, displayName s
 		return fmt.Errorf("ワークスペース作成エラー: %w", err)
 	}
 
-	// ワークスペースメンバーを作成
-	workspaceMember := WorkspaceMember{
-		WorkspaceID: workspace.ID,
-		UserID:      user.ID,
-		DisplayName: displayName,
-		ImageURL:    user.Image,
-	}
-
-	query = `INSERT INTO workspace_members (workspace_id, user_id, display_name, image_url) VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at`
-	err = tx.QueryRow(query, workspaceMember.WorkspaceID, workspaceMember.UserID, workspaceMember.DisplayName, workspaceMember.ImageURL).Scan(&workspaceMember.ID, &workspaceMember.CreatedAt, &workspaceMember.UpdatedAt)
+	// // ワークスペースメンバーを作成
+	err = CreateWorkspaceMember(tx, workspace, user, displayName)
 	if err != nil {
 		return fmt.Errorf("ワークスペースメンバー作成エラー: %w", err)
 	}
@@ -180,4 +172,21 @@ func CreateWorkspaceWithChannels(tx *sql.Tx, workspace *Workspace, displayName s
 	}
 
 	return nil
+}
+
+func CreateWorkspaceMember(tx *sql.Tx, workspace *Workspace, user *User, displayName string) error {
+		workspaceMember := WorkspaceMember{
+			WorkspaceID: workspace.ID,
+			UserID:      user.ID,
+			DisplayName: displayName,
+			ImageURL:    user.Image,
+		}
+
+		query := `INSERT INTO workspace_members (workspace_id, user_id, display_name, image_url) VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at`
+		err := tx.QueryRow(query, workspaceMember.WorkspaceID, workspaceMember.UserID, workspaceMember.DisplayName, workspaceMember.ImageURL).Scan(&workspaceMember.ID, &workspaceMember.CreatedAt, &workspaceMember.UpdatedAt)
+		if err != nil {
+			return err
+		}
+
+		return nil
 }
