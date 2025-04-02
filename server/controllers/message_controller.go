@@ -15,7 +15,7 @@ func ListMessages(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "ChannelIDが必要です")
 	}
 
-	messages, err := models.ListMessages(channelID)
+	messages, err := models.GetMessages(channelID)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー: " + err.Error())
 	}
@@ -40,15 +40,7 @@ func AddMessage(c echo.Context) error {
 	// MessagesテーブルにINSERTして、INSERTしたレコードのIDを取得
 	var insertedID int
 	var createdAt time.Time
-	err := db.DB.QueryRow(`
-		INSERT INTO messages (content, user_id, channel_id) 
-		VALUES ($1, $2, $3) 
-		RETURNING id, created_at`,
-		req.Content,
-		req.User.ID,
-		req.ChannelID,
-	).Scan(&insertedID, &createdAt)
-
+	err := db.DB.QueryRow(`INSERT INTO messages (content, user_id, channel_id) VALUES ($1, $2, $3) RETURNING id, created_at`, req.Content, req.User.ID,req.ChannelID).Scan(&insertedID, &createdAt)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー")
 	}

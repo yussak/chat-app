@@ -14,7 +14,7 @@ type Message struct {
 	Reactions string `json:"reactions"`
 }
 
-func ListMessages(channelID string) ([]Message, error) {
+func GetMessages(channelID string) ([]Message, error) {
 	query := `
 		SELECT
 			m.id,
