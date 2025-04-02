@@ -13,6 +13,9 @@ interface Message {
   id: number;
   content: string;
   created_at: string;
+  channel_id: number;
+  user_id: number;
+  updated_at: string;
   user: {
     id: number;
     name: string;
@@ -116,11 +119,6 @@ export default function Channel() {
                 <MessageItem
                   key={message.id}
                   message={message}
-                  setMessage={setMessage}
-                  handleStrikethrough={handleStrikethrough}
-                  handleSend={handleSend}
-                  error={""}
-                  onSubmit={handleSend}
                   handleAddReaction={handleAddReaction}
                   activePickerId={activePickerId}
                   setActivePickerId={setActivePickerId}
