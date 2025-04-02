@@ -62,42 +62,15 @@ query := `
 
 func GetWorkspace(id string) (*WorkspaceWithChannels, error) {
 	// ワークスペース情報を取得
-	workspaceQuery := `
-		SELECT 
-			id,
-			name,
-			owner_id,
-			theme,
-			created_at,
-			updated_at
-		FROM workspaces
-		WHERE id = $1
-	`
+	workspaceQuery := `SELECT id, name, owner_id, theme, created_at, updated_at FROM workspaces WHERE id = $1`
 	var workspace Workspace
-	err := db.DB.QueryRow(workspaceQuery, id).Scan(
-		&workspace.ID,
-		&workspace.Name,
-		&workspace.OwnerID,
-		&workspace.Theme,
-		&workspace.CreatedAt,
-		&workspace.UpdatedAt,
-	)
+	err := db.DB.QueryRow(workspaceQuery, id).Scan(&workspace.ID, &workspace.Name, &workspace.OwnerID, &workspace.Theme, &workspace.CreatedAt, &workspace.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
 
 	// チャンネル情報を取得
-	channelsQuery := `
-		SELECT 
-			id,
-			workspace_id,
-			name,
-			is_public,
-			created_at,
-			updated_at
-		FROM channels
-		WHERE workspace_id = $1
-	`
+	channelsQuery := `SELECT id, workspace_id, name, is_public, created_at, updated_at FROM channels WHERE workspace_id = $1`
 	rows, err := db.DB.Query(channelsQuery, id)
 	if err != nil {
 		return nil, err
@@ -107,14 +80,7 @@ func GetWorkspace(id string) (*WorkspaceWithChannels, error) {
 	var channels []Channel
 	for rows.Next() {
 		var channel Channel
-		err := rows.Scan(
-			&channel.ID,
-			&channel.WorkspaceID,
-			&channel.Name,
-			&channel.IsPublic,
-			&channel.CreatedAt,
-			&channel.UpdatedAt,
-		)
+		err := rows.Scan(&channel.ID, &channel.WorkspaceID, &channel.Name, &channel.IsPublic, &channel.CreatedAt, &channel.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -138,7 +104,6 @@ func CreateWorkspace(tx *sql.Tx, workspace *Workspace, displayName string, user 
 		return fmt.Errorf("ワークスペース作成エラー: %w", err)
 	}
 
-	// // ワークスペースメンバーを作成
 	err = CreateWorkspaceMember(tx, workspace, user, displayName)
 	if err != nil {
 		return fmt.Errorf("ワークスペースメンバー作成エラー: %w", err)
