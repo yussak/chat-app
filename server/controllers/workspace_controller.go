@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"server/db"
 	"server/models"
@@ -26,7 +25,6 @@ func CreateWorkspace(c echo.Context) error {
 		Theme       string `json:"theme"`
 	}
 
-	// user existsは/users/existsでチェックしてるのでこっちでは不要そう？いや必要そう
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid request"})
 	}
@@ -56,68 +54,17 @@ func CreateWorkspace(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, map[string]string{"error": "user not found"})
 	}
 
-	ownerID := user.ID
-	if ownerID == 0 {
-		return c.JSON(http.StatusNotFound, map[string]string{"error": "user not found"})
-	}
-
 	workspace := models.Workspace{
-		OwnerID: ownerID,
+		OwnerID: user.ID,
 		Name:    req.Name,
 		Theme:   req.Theme,
 	}
 
-	query := `INSERT INTO workspaces (owner_id, name, theme) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at`
-	err = tx.QueryRow(query, workspace.OwnerID, req.Name, req.Theme).Scan(&workspace.ID, &workspace.CreatedAt, &workspace.UpdatedAt)
-	if err != nil {
+	// モデル層の関数を呼び出し
+	if err := models.CreateWorkspaceWithChannels(tx, &workspace, req.DisplayName, user); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"error": "ワークスペース作成エラー",
+			"error": err.Error(),
 		})
-	}
-
-	// ワークスペースメンバーを作成
-	workspaceMember := models.WorkspaceMember{
-		WorkspaceID: workspace.ID,
-		UserID:      user.ID,
-		DisplayName: req.DisplayName,
-		ImageURL:    user.Image,
-	}
-
-	query = `INSERT INTO workspace_members (workspace_id, user_id, display_name, image_url) VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at`
-	err = tx.QueryRow(query, workspaceMember.WorkspaceID, workspaceMember.UserID, workspaceMember.DisplayName, workspaceMember.ImageURL).Scan(&workspaceMember.ID, &workspaceMember.CreatedAt, &workspaceMember.UpdatedAt)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"error": "ワークスペースメンバー作成エラー",
-		})
-	}
-
-	// チャンネルを作成
-	channels := []models.Channel{
-		{
-			WorkspaceID: int64(workspace.ID),
-			Name:        fmt.Sprintf("all-%s", req.Name),
-			IsPublic:    true,
-		},
-		{
-			WorkspaceID: int64(workspace.ID),
-			Name:        "ソーシャル",
-			IsPublic:    true,
-		},
-		{
-			WorkspaceID: int64(workspace.ID),
-			Name:        req.Theme,
-			IsPublic:    true,
-		},
-	}
-
-	for _, channel := range channels {
-		query = `INSERT INTO channels (workspace_id, name, is_public) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at`
-		err = tx.QueryRow(query, channel.WorkspaceID, channel.Name, channel.IsPublic).Scan(&channel.ID, &channel.CreatedAt, &channel.UpdatedAt)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{
-				"error": "チャンネル作成エラー",
-			})
-		}
 	}
 
 	// トランザクションをコミット
