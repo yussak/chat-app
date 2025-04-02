@@ -130,7 +130,7 @@ func GetWorkspace(id string) (*WorkspaceWithChannels, error) {
 	return &response, nil
 }
 
-func CreateWorkspaceWithChannels(tx *sql.Tx, workspace *Workspace, displayName string, user *User) error {
+func CreateWorkspace(tx *sql.Tx, workspace *Workspace, displayName string, user *User) error {
 	// ワークスペースを作成
 	query := `INSERT INTO workspaces (owner_id, name, theme) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at`
 	err := tx.QueryRow(query, workspace.OwnerID, workspace.Name, workspace.Theme).Scan(&workspace.ID, &workspace.CreatedAt, &workspace.UpdatedAt)

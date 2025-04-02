@@ -60,8 +60,7 @@ func CreateWorkspace(c echo.Context) error {
 		Theme:   req.Theme,
 	}
 
-	// モデル層の関数を呼び出し
-	if err := models.CreateWorkspaceWithChannels(tx, &workspace, req.DisplayName, user); err != nil {
+	if err := models.CreateWorkspace(tx, &workspace, req.DisplayName, user); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"error": err.Error(),
 		})
