@@ -4,6 +4,7 @@ import { api } from "@/app/lib/api-client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import ChannelList from "@/app/components/ChannelList";
 
 type Workspace = {
   id: number;
@@ -53,19 +54,7 @@ export default function Workspace() {
       <div className="w-2/10 bg-gray-100 p-4 border-r">
         <h2>{workspace.name}</h2>
         <p>チャンネル</p>
-        <ul>
-          {workspace.channels &&
-            workspace.channels.map((channel) => (
-              <li key={channel.id}>
-                <Link
-                  href={`/channels/${channel.id}`}
-                  className="block hover:bg-gray-200 p-2 rounded"
-                >
-                  # {channel.name}
-                </Link>
-              </li>
-            ))}
-        </ul>
+        <ChannelList channels={workspace.channels} />
       </div>
 
       {/* メインコンテンツ */}
