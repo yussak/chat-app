@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"server/db"
 	"server/models"
-	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -36,24 +35,15 @@ func AddMessage(c echo.Context) error {
 	if req.ChannelID == 0 {
 		return c.String(http.StatusBadRequest, "ChannelIDが必要です")
 	}
+	if req.User.ID == 0 {
+		return c.String(http.StatusBadRequest, "UserIDが必要です")
+	}
 
-	// MessagesテーブルにINSERTして、INSERTしたレコードのIDを取得
-	var insertedID int
-	var createdAt time.Time
-	err := db.DB.QueryRow(`INSERT INTO messages (content, user_id, channel_id) VALUES ($1, $2, $3) RETURNING id, created_at`, req.Content, req.User.ID,req.ChannelID).Scan(&insertedID, &createdAt)
+	newMessage, err := models.AddMessage(req.Content, req.User.ID, req.ChannelID, req.User)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "データベースエラー")
+		return c.String(http.StatusInternalServerError, "データベースエラー: " + err.Error())
 	}
 
-	// 登録したMessageをJSONで返す
-	newMessage := models.Message{
-		ID:   insertedID,
-		Content: req.Content,
-		User: req.User,
-		ChannelID: req.ChannelID,
-		Reactions: "{}",
-		CreatedAt: createdAt,
-	}
 
 	return c.JSON(http.StatusOK, newMessage)
 }
