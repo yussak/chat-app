@@ -66,8 +66,7 @@ func DeleteMessage(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "リアクション削除エラー")
 	}
 
-	// メッセージを削除
-	_, err = tx.Exec("DELETE FROM messages WHERE id = $1", id)
+	err = models.DeleteMessage(id, tx)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "メッセージ削除エラー")
 	}
