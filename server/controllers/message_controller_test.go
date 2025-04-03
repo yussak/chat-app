@@ -150,7 +150,7 @@ func TestAddMessage_DBError(t *testing.T) {
 	defer func() { models.AddMessage = original }()
 
 	// モック関数に差し替え
-	models.AddMessage = func(content string, userID int, channelID int, user models.User) (models.Message, error) {
+	models.AddMessage = func(content string, channelID int, user models.User) (models.Message, error) {
 		return models.Message{}, errors.New("DB connection failed")
 	}
 
@@ -174,7 +174,7 @@ func TestAddMessage_Success(t *testing.T) {
 	original := models.AddMessage
 	defer func() { models.AddMessage = original }()
 
-	models.AddMessage = func(content string, userID int, channelID int, user models.User) (models.Message, error) {
+	models.AddMessage = func(content string, channelID int, user models.User) (models.Message, error) {
 		return models.Message{
 			ID:        1,
 			Content:   "test message",

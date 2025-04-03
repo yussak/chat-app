@@ -73,12 +73,12 @@ var GetMessages = func(channelID string) ([]Message, error) {
 }
 
 // テストでモックのためvarとしている
-var AddMessage = func(content string, userID int, channelID int, user User) (Message, error) {
+var AddMessage = func(content string, channelID int, user User) (Message, error) {
 
 // MessagesテーブルにINSERTして、INSERTしたレコードのIDを取得
 var insertedID int
 var createdAt time.Time
-err := db.DB.QueryRow(`INSERT INTO messages (content, user_id, channel_id) VALUES ($1, $2, $3) RETURNING id, created_at`, content, userID,channelID).Scan(&insertedID, &createdAt)
+err := db.DB.QueryRow(`INSERT INTO messages (content, user_id, channel_id) VALUES ($1, $2, $3) RETURNING id, created_at`, content, user.ID, channelID).Scan(&insertedID, &createdAt)
 if err != nil {
 	return Message{}, err
 }
