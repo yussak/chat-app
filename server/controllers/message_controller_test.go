@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"server/models"
 	"testing"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
@@ -42,4 +43,40 @@ func TestListMessages_DBError(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, http.StatusInternalServerError, rec.Code)
 	require.Contains(t, rec.Body.String(), "データベースエラー: DB connection failed")
+}
+
+func TestListMessages_success(t *testing.T) {
+	original := models.GetMessages
+	defer func() { models.GetMessages = original }()
+
+	mockMessages := []models.Message{
+		{
+			ID:        1,
+			Content:   "test message",
+			CreatedAt: time.Date(2025, 4, 3, 21, 58, 47, 107456000, time.FixedZone("JST", 9*60*60)),
+			ChannelID: 1,
+			User: models.User{
+				ID:    1,
+				Name:  "test user",
+				Image: "user.png",
+			},
+			Reactions: "{}",
+		},
+	}
+
+	// モック関数に差し替え
+	models.GetMessages = func(channelID string) ([]models.Message, error) {
+		return mockMessages, nil
+	}
+
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/messages?channel_id=test123", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	err := ListMessages(c)
+	require.NoError(t, err)
+
+	require.Equal(t, http.StatusOK, rec.Code)
+	require.JSONEq(t, `[{"id":1,"content":"test message","channel_id":1,"created_at":"2025-04-03T21:58:47.107456+09:00","user":{"id":1,"name":"test user","image":"user.png","email":"","created_at":"0001-01-01T00:00:00Z","updated_at":"0001-01-01T00:00:00Z"},"reactions":"{}"}]`, rec.Body.String())
 }
