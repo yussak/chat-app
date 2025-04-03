@@ -39,12 +39,10 @@ func AddMessage(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "UserIDが必要です")
 	}
 
-	// todo 引数改善
 	newMessage, err := models.AddMessage(req.Content, req.ChannelID, req.User)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー: " + err.Error())
 	}
-
 
 	return c.JSON(http.StatusOK, newMessage)
 }
