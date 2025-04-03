@@ -18,7 +18,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
   const { data: session } = useSession();
 
   return (
-    <div className="w-3/10 bg-gray-100 p-4 border-r">
+    <div className="w-1/10 bg-gray-100 p-4 border-r">
       <div className="flex justify-between items-center mb-4">
         <h1>Welcome, {session?.user?.name}</h1>
         <button onClick={() => signOut()}>Sign out</button>
@@ -41,6 +41,14 @@ export default function Sidebar({ workspaces }: SidebarProps) {
             ))}
         </ul>
       </div>
+
+      <div className="mb-4">
+        {/* todo;動的な値に対応 */}
+        <Link href="/workspaces/1/channels/1">ホーム</Link>
+      </div>
+      <div className="mb-4">DM</div>
+      <div className="mb-4">アクティビティ</div>
+      <div className="mb-4">その他</div>
     </div>
   );
 }
