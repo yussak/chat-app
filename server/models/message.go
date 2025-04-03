@@ -14,7 +14,8 @@ type Message struct {
 	Reactions string `json:"reactions"`
 }
 
-func GetMessages(channelID string) ([]Message, error) {
+// テスト時に関数をモック差し替えできるよう、func ではなく var で定義している
+var GetMessages = func(channelID string) ([]Message, error) {
 	query := `
 		SELECT
 			m.id,
