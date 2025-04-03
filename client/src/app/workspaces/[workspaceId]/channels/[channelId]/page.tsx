@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 
 import { MessageForm } from "@/app/messages/components/MessageForm";
 import { MessageItem } from "@/app/messages/components/MessageItem";
+import ChannelList from "@/app/components/ChannelList";
 
 interface Message {
   id: number;
@@ -29,11 +30,24 @@ interface Channel {
   created_at: string;
 }
 
+interface Workspace {
+  id: number;
+  name: string;
+  channels: {
+    id: number;
+    workspace_id: number;
+    name: string;
+    is_public: boolean;
+  }[];
+}
+
 export default function Channel() {
   const { data: session } = useSession();
   const params = useParams();
-  const id = params.id;
+  const id = params.channelId;
+  const workspaceId = params.workspaceId;
 
+  const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [channel, setChannel] = useState<Channel | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState("");
@@ -51,13 +65,19 @@ export default function Channel() {
     });
 
   useEffect(() => {
+    const fetchWorkspace = async () => {
+      const res = await api.get(`/workspaces/${workspaceId}`);
+      setWorkspace(res.data);
+    };
+    fetchWorkspace();
+
     const fetchChannel = async () => {
       const res = await api.get(`/channels/${id}`);
       setChannel(res.data);
     };
     fetchChannel();
     fetchMessages().then((res) => setMessages(res.data));
-  }, [id]);
+  }, [id, workspaceId]);
 
   const handleSend = async () => {
     if (!message.trim()) return;
@@ -108,9 +128,20 @@ export default function Channel() {
 
   return (
     <div className="flex h-screen">
-      <p>Channel {id}</p>
-      <p>name: {channel?.name}</p>
+      <div className="w-2/10 bg-gray-100 p-4 border-r">
+        <h2>{workspace?.name}</h2>
+        <p>チャンネル</p>
+        {workspace && (
+          <ChannelList
+            channels={workspace.channels}
+            workspaceId={workspace.id}
+          />
+        )}
+      </div>
       <div className="w-7/10 flex flex-col">
+        <div className="p-4 border-b">
+          <h1 className="text-xl font-bold">#{channel?.name}</h1>
+        </div>
         {/* メッセージリスト */}
         <div className="flex-1 overflow-y-auto p-4">
           <ul className="space-y-4">
