@@ -61,7 +61,7 @@ func DeleteMessage(c echo.Context) error {
 	defer tx.Rollback()
 
 	// まずリアクションを削除
-	_, err = tx.Exec("DELETE FROM reactions WHERE message_id = $1", id)
+	err = models.DeleteReaction(id, tx)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "リアクション削除エラー")
 	}
