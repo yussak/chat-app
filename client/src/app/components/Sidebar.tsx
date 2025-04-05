@@ -19,11 +19,6 @@ export default function Sidebar({ workspaces }: SidebarProps) {
 
   return (
     <div className="w-1/10 bg-gray-100 p-4 border-r">
-      <div className="flex justify-between items-center mb-4">
-        <h1>Welcome, {session?.user?.name}</h1>
-        <button onClick={() => signOut()}>Sign out</button>
-      </div>
-
       <div className="mb-4">
         <Link href="/workspaces/new">ワークスペースを作成</Link>
       </div>
@@ -49,6 +44,13 @@ export default function Sidebar({ workspaces }: SidebarProps) {
       <div className="mb-4">DM</div>
       <div className="mb-4">アクティビティ</div>
       <div className="mb-4">その他</div>
+
+      <div className="flex justify-between items-center mb-4">
+        {/* <h1>{session?.user?.name}</h1> */}
+        {/* todo: Image使用 */}
+        <img src={session?.user?.image} alt="user-image" />
+        {/* <button onClick={() => signOut()}>Sign out</button> */}
+      </div>
     </div>
   );
 }
