@@ -63,6 +63,7 @@ export default function Channel() {
       },
       channel_id: Number(id),
     });
+  console.log(messages);
 
   useEffect(() => {
     const fetchWorkspace = async () => {
@@ -82,6 +83,12 @@ export default function Channel() {
   const handleSend = async () => {
     if (!message.trim()) return;
     const res = await postMessage(message);
+
+    if (messages == null) {
+      setMessages([res.data]);
+      setMessage("");
+      return;
+    }
     setMessages([...messages, res.data]);
     setMessage("");
   };
