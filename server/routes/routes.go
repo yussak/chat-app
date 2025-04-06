@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"server/application"
 	"server/controllers"
 	"server/ui"
 
@@ -37,10 +38,9 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.CreateWorkspace(c)
 	})
 
-	e.GET("/workspaces", func(c echo.Context) error {
-		return ui.ListWorkspaces(c)
-		// return controllers.ListWorkspaces(c)
-	})
+	handler := ui.NewWorkspaceController(application.NewWorkspaceService())
+	e.GET("/workspaces", handler.ListWorkspaces)
+
 
 	e.GET("/workspaces/:id", func(c echo.Context) error {
 		return controllers.GetWorkspace(c)

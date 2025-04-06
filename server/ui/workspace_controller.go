@@ -7,8 +7,16 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func ListWorkspaces(c echo.Context) error {
-	workspaces, err := application.ListWorkspaces()
+type WorkspaceController struct {
+	Service application.WorkspaceService
+}
+
+func NewWorkspaceController(s application.WorkspaceService) *WorkspaceController {
+	return &WorkspaceController{Service: s}
+}
+
+func (h *WorkspaceController) ListWorkspaces(c echo.Context) error {
+	workspaces, err := h.Service.ListWorkspaces()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find workspaces"})
 	}

@@ -5,7 +5,17 @@ import (
 	"server/infrastructure"
 )
 
-func ListWorkspaces() ([]domain.Workspace, error) {
+type WorkspaceService interface {
+	ListWorkspaces() ([]domain.Workspace, error)
+}
+
+type workspaceServiceImpl struct {}
+
+func NewWorkspaceService() WorkspaceService {
+	return &workspaceServiceImpl{}
+}
+
+func (s *workspaceServiceImpl) ListWorkspaces() ([]domain.Workspace, error) {
 	raw, err := infrastructure.FindAll()
 	if err != nil {
 		return nil, err
