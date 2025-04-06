@@ -31,35 +31,6 @@ type WorkspaceMember struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func ListWorkspaces() ([]Workspace, error) {
-query := `
-		SELECT
-			w.id,
-			w.name,
-			w.owner_id,
-			w.theme,
-			w.created_at,
-			w.updated_at
-		FROM workspaces w
-	`
-	rows, err := db.DB.Query(query)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var workspaces []Workspace
-	for rows.Next() {
-		var workspace Workspace
-		if err := rows.Scan(&workspace.ID, &workspace.Name, &workspace.OwnerID, &workspace.Theme, &workspace.CreatedAt, &workspace.UpdatedAt); err != nil {
-			return nil, err
-		}
-		workspaces = append(workspaces, workspace)
-	}
-
-	return workspaces, nil
-}
-
 func GetWorkspace(id string) (*WorkspaceWithChannels, error) {
 	// ワークスペース情報を取得
 	workspaceQuery := `SELECT id, name, owner_id, theme, created_at, updated_at FROM workspaces WHERE id = $1`

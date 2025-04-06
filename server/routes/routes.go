@@ -2,6 +2,7 @@ package routes
 
 import (
 	"server/controllers"
+	"server/ui"
 
 	"github.com/labstack/echo/v4"
 )
@@ -37,7 +38,8 @@ func SetupRoutes(e *echo.Echo) {
 	})
 
 	e.GET("/workspaces", func(c echo.Context) error {
-		return controllers.ListWorkspaces(c)
+		return ui.ListWorkspaces(c)
+		// return controllers.ListWorkspaces(c)
 	})
 
 	e.GET("/workspaces/:id", func(c echo.Context) error {

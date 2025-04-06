@@ -7,6 +7,7 @@ import (
 	"server/db"
 	"server/models"
 	"server/test"
+	"server/ui"
 	"testing"
 
 	"github.com/labstack/echo/v4"
@@ -14,6 +15,7 @@ import (
 )
 
 // メモ go test ./... -v
+// todo: レイヤードに変えたのでテストも書き換え(不要かもしれない)
 func TestListWorkspaces(t *testing.T) {
 	// テストデータベースの接続
 	testDB := test.GetTestDB(t)
@@ -52,7 +54,7 @@ func TestListWorkspaces(t *testing.T) {
 	c := e.NewContext(req, rec)
 
 	// テストの実行
-	err = ListWorkspaces(c)
+	err = ui.ListWorkspaces(c)
 
 	// アサーション
 	assert.NoError(t, err)
