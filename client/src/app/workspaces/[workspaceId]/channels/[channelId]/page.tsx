@@ -145,7 +145,7 @@ export default function Channel() {
           />
         )}
       </div>
-      <div className="w-7/10 flex flex-col">
+      <div className="w-full flex flex-col">
         <div className="p-4 border-b">
           <h1 className="text-xl font-bold">#{channel?.name}</h1>
         </div>
@@ -169,6 +169,7 @@ export default function Channel() {
 
         <MessageForm
           message={message}
+          placeholder={`#${channel?.name} へのメッセージ`}
           setMessage={setMessage}
           handleStrikethrough={handleStrikethrough}
           handleSend={handleSend}
