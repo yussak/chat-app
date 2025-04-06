@@ -63,7 +63,6 @@ export default function Channel() {
       },
       channel_id: Number(id),
     });
-  console.log(messages);
 
   useEffect(() => {
     const fetchWorkspace = async () => {
