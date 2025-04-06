@@ -29,7 +29,9 @@ export default function Sidebar({ workspaces }: SidebarProps) {
           {workspaces &&
             workspaces.map((workspace) => (
               <li key={workspace.id}>
-                <Link href={`/workspaces/${workspace.id}`}>
+                <Link
+                  href={`/workspaces/${workspace.id}/channels/${workspace.youngestChannelId}`}
+                >
                   {workspace.name}
                 </Link>
               </li>

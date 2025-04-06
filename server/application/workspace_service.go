@@ -35,6 +35,14 @@ func (s *workspaceServiceImpl) ListWorkspaces() ([]domain.Workspace, error) {
 	return result, nil
 }
 
+func ListSidebarProps() ([]infrastructure.WorkspaceSidebarProps, error) {
+	raw, err := infrastructure.GetSidebarProps()
+	if err != nil {
+		return nil, err
+	}
+	return raw, nil
+}
+
 func GetWorkspace(id string) (*domain.WorkspaceWithChannels, error) {
 	raw, err := infrastructure.FindById(id)
 	if err != nil {

@@ -10,7 +10,8 @@ export default async function WorkspaceLayout({
   params: { workspaceId: string };
 }) {
   // serverと指定する必要があるので一旦直がきしている
-  const response = await axios.get(`http://server:8080/workspaces`);
+  // sidebarに必要な情報に絞って取得
+  const response = await axios.get(`http://server:8080/sidebar`);
   const workspaces = response.data;
 
   return (

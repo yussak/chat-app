@@ -49,4 +49,8 @@ func SetupRoutes(e *echo.Echo) {
 	e.GET("/channels/:id", func(c echo.Context) error {
 		return controllers.GetChannel(c)
 	})
+
+	e.GET("/sidebar", func(c echo.Context) error {
+		return ui.GetSidebarProps(c)
+	})
 }

@@ -37,3 +37,12 @@ func GetWorkspace(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, workspace)
 }
+
+func GetSidebarProps(c echo.Context) error {
+	workspaces, err := application.ListSidebarProps()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find workspaces"})
+	}
+
+	return c.JSON(http.StatusOK, workspaces)
+}
