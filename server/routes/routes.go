@@ -40,11 +40,7 @@ func SetupRoutes(e *echo.Echo) {
 
 	handler := ui.NewWorkspaceController(application.NewWorkspaceService())
 	e.GET("/workspaces", handler.ListWorkspaces)
-
-
-	e.GET("/workspaces/:id", func(c echo.Context) error {
-		return ui.GetWorkspace(c)
-	})
+	e.GET("/workspaces/:id", handler.GetWorkspace)
 
 	e.GET("/channels/:id", func(c echo.Context) error {
 		return controllers.GetChannel(c)

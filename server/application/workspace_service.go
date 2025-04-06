@@ -7,6 +7,7 @@ import (
 
 type WorkspaceService interface {
 	ListWorkspaces() ([]domain.Workspace, error)
+	GetWorkspace(id string) (*domain.WorkspaceWithChannels, error)
 }
 
 type workspaceServiceImpl struct {}
@@ -43,7 +44,7 @@ func ListSidebarProps() ([]infrastructure.WorkspaceSidebarProps, error) {
 	return raw, nil
 }
 
-func GetWorkspace(id string) (*domain.WorkspaceWithChannels, error) {
+func (s *workspaceServiceImpl) GetWorkspace(id string) (*domain.WorkspaceWithChannels, error) {
 	raw, err := infrastructure.FindById(id)
 	if err != nil {
 		return nil, err

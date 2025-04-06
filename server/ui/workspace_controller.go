@@ -24,13 +24,13 @@ func (h *WorkspaceController) ListWorkspaces(c echo.Context) error {
 	return c.JSON(http.StatusOK, workspaces)
 }
 
-func GetWorkspace(c echo.Context) error {
+func (h *WorkspaceController) GetWorkspace(c echo.Context) error {
 	id := c.Param("id")
 	if id == "" {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "ID is required"})
 	}
 
-	workspace, err := application.GetWorkspace(id)
+	workspace, err := h.Service.GetWorkspace(id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to get workspace"})
 	}
