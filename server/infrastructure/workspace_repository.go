@@ -15,16 +15,7 @@ type Workspace struct {
 }
 
 func FindAll() ([]Workspace, error) {
-	query := `
-			SELECT
-				w.id,
-				w.name,
-				w.owner_id,
-				w.theme,
-				w.created_at,
-				w.updated_at
-			FROM workspaces w
-		`
+	query := `SELECT id, name, owner_id, theme, created_at, updated_at FROM workspaces`
 		rows, err := db.DB.Query(query)
 		if err != nil {
 			return nil, err
