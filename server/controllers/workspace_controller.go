@@ -67,17 +67,3 @@ func CreateWorkspace(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, workspace)
 }
-
-func GetWorkspace(c echo.Context) error {
-	id := c.Param("id")
-	if id == "" {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "ID is required"})
-	}
-
-	workspace, err := models.GetWorkspace(id)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to get workspace"})
-	}
-
-	return c.JSON(http.StatusOK, workspace)
-}

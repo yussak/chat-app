@@ -3,7 +3,6 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	"server/db"
 	"time"
 )
 
@@ -29,42 +28,6 @@ type WorkspaceMember struct {
 	ImageURL string `json:"image_url"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
-}
-
-func GetWorkspace(id string) (*WorkspaceWithChannels, error) {
-	// ワークスペース情報を取得
-	workspaceQuery := `SELECT id, name, owner_id, theme, created_at, updated_at FROM workspaces WHERE id = $1`
-	var workspace Workspace
-	err := db.DB.QueryRow(workspaceQuery, id).Scan(&workspace.ID, &workspace.Name, &workspace.OwnerID, &workspace.Theme, &workspace.CreatedAt, &workspace.UpdatedAt)
-	if err != nil {
-		return nil, err
-	}
-
-	// チャンネル情報を取得
-	channelsQuery := `SELECT id, workspace_id, name, is_public, created_at, updated_at FROM channels WHERE workspace_id = $1`
-	rows, err := db.DB.Query(channelsQuery, id)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var channels []Channel
-	for rows.Next() {
-		var channel Channel
-		err := rows.Scan(&channel.ID, &channel.WorkspaceID, &channel.Name, &channel.IsPublic, &channel.CreatedAt, &channel.UpdatedAt)
-		if err != nil {
-			return nil, err
-		}
-		channels = append(channels, channel)
-	}
-
-	// ワークスペースとチャンネル情報を結合
-	response := WorkspaceWithChannels{
-		Workspace: workspace,
-		Channels:  channels,
-	}
-
-	return &response, nil
 }
 
 func CreateWorkspace(tx *sql.Tx, workspace *Workspace, displayName string, user *User) error {

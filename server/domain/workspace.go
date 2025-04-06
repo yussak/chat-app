@@ -1,6 +1,8 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 type Workspace struct {
 	ID        int       `json:"id"`
@@ -9,4 +11,9 @@ type Workspace struct {
 	Theme     string    `json:"theme"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type WorkspaceWithChannels struct {
+	Workspace
+	Channels []Channel `json:"channels"`
 }
