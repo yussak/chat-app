@@ -1,3 +1,5 @@
 server/tmp
 /tmp
 settings.json
+
+.cursor/
