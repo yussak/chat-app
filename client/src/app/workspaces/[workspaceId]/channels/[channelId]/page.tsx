@@ -52,6 +52,8 @@ export default function Channel() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState("");
   const [activePickerId, setActivePickerId] = useState<number | null>(null);
+  const [openPopover, setOpenPopover] = useState(false);
+  const [addChannelModal, setAddChannelModal] = useState(false);
   const fetchMessages = () => api.get(`/messages?channel_id=${id}`);
   const postMessage = (content: string) =>
     api.post("/messages", {
@@ -132,16 +134,69 @@ export default function Channel() {
     setMessages(messages.filter((message) => message.id !== messageId));
   };
 
+  const handleAddChannel = () => {
+    setAddChannelModal(true);
+    setOpenPopover(false);
+  };
+
   return (
     <div className="flex h-screen">
       <div className="w-2/10 bg-gray-100 p-4 border-r">
         <h2>{workspace?.name}</h2>
         <p>チャンネル</p>
         {workspace && (
-          <ChannelList
-            channels={workspace.channels}
-            workspaceId={workspace.id}
-          />
+          <>
+            <ChannelList
+              channels={workspace.channels}
+              workspaceId={workspace.id}
+            />
+            <div className="relative">
+              <button onClick={() => setOpenPopover(!openPopover)}>
+                チャンネルを追加する
+              </button>
+            </div>
+
+            {openPopover && (
+              <div className="absolute bg-white p-4 rounded shadow-lg">
+                <p>
+                  <button onClick={handleAddChannel}>
+                    新しいチャンネルを作成する
+                  </button>
+                </p>
+                <p>
+                  <button>チャンネル一覧</button>
+                </p>
+              </div>
+            )}
+
+            {addChannelModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white p-6 rounded-lg shadow-xl w-[500px]">
+                  <h2 className="text-xl font-bold mb-4">
+                    チャンネルを追加する
+                  </h2>
+                  <div className="mb-4">
+                    <input
+                      type="text"
+                      placeholder="チャンネル名"
+                      className="w-full p-2 border rounded"
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => setAddChannelModal(false)}
+                      className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 mr-2"
+                    >
+                      キャンセル
+                    </button>
+                    <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                      作成
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
       <div className="w-full flex flex-col">
