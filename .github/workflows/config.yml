@@ -1,0 +1,37 @@
+name: Build and Test
+on: [push]
+
+jobs:
+  backend_build_and_test:
+    name: backend build and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out code
+        uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: "1.23.4"
+
+      - name: Go build & test
+        run: |
+          cd backend
+          go build .
+          go test -v
+
+  frontend_build_and_test:
+    name: frontend build and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out code
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22.14.0"
+
+      - name: frontend install & build
+        working-directory: ./frontend
+        run: |
+          yarn install
+          yarn run build
