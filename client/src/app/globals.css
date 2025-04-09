@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.base-color {
+  background: rgba(95, 37, 101, 1);
+}
+
+.aa {
+  /* background: rgba(32, 2, 33, 1); */
+  background: rgba(67, 19, 73, 1);
+}
+
+.bb {
+  background-color: rgba(16, 18, 20, 0.75);
+}

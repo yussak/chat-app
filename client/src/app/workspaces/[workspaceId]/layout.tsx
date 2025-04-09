@@ -15,7 +15,10 @@ export default async function WorkspaceLayout({
   const workspaces = response.data;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", height: "100vh" }}
+      className="bb"
+    >
       <Header />
       <div style={{ display: "flex", flex: 1 }}>
         <Sidebar workspaces={workspaces} />

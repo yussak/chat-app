@@ -56,7 +56,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
   };
 
   return (
-    <div className="w-1/10 bg-gray-100 p-4 border-r">
+    <div className="w-1/10 bg-gray-100 p-4 border-r base-color text-white">
       <div className="mb-4">
         <Link href="/workspaces/new">ワークスペースを作成</Link>
       </div>

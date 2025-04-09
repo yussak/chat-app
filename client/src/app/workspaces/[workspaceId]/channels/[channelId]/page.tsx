@@ -141,7 +141,7 @@ export default function Channel() {
 
   return (
     <div className="flex h-screen">
-      <div className="w-2/10 bg-gray-100 p-4 border-r">
+      <div className="w-2/10 bg-gray-100 p-4 border-r aa text-white">
         <h2>{workspace?.name}</h2>
         <p>チャンネル</p>
         {workspace && (
