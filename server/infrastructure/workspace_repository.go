@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+type WorkspaceRepository struct{}
+
+func NewWorkspaceRepository() *WorkspaceRepository {
+	return &WorkspaceRepository{}
+}
+
 type Workspace struct {
 	ID        int       `json:"id"`
 	Name      string    `json:"name"`
@@ -35,24 +41,24 @@ type WorkspaceSidebarProps struct {
 	YoungestChannelID int64  `json:"youngestChannelId"`
 }
 
-func FindAll() ([]Workspace, error) {
+func (r *WorkspaceRepository) FindAll() ([]Workspace, error) {
 	query := `SELECT id, name, owner_id, theme, created_at, updated_at FROM workspaces`
-		rows, err := db.DB.Query(query)
-		if err != nil {
+	rows, err := db.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var workspaces []Workspace
+	for rows.Next() {
+		var workspace Workspace
+		if err := rows.Scan(&workspace.ID, &workspace.Name, &workspace.OwnerID, &workspace.Theme, &workspace.CreatedAt, &workspace.UpdatedAt); err != nil {
 			return nil, err
 		}
-		defer rows.Close()
+		workspaces = append(workspaces, workspace)
+	}
 
-		var workspaces []Workspace
-		for rows.Next() {
-			var workspace Workspace
-			if err := rows.Scan(&workspace.ID, &workspace.Name, &workspace.OwnerID, &workspace.Theme, &workspace.CreatedAt, &workspace.UpdatedAt); err != nil {
-				return nil, err
-			}
-			workspaces = append(workspaces, workspace)
-		}
-
-		return workspaces, nil
+	return workspaces, nil
 }
 
 func FindById(id string) (*WorkspaceWithChannels, error) {

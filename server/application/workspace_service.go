@@ -10,14 +10,16 @@ type WorkspaceService interface {
 	GetWorkspace(id string) (*domain.WorkspaceWithChannels, error)
 }
 
-type workspaceServiceImpl struct {}
+type workspaceServiceImpl struct {
+	repo domain.WorkspaceRepository
+}
 
-func NewWorkspaceService() WorkspaceService {
-	return &workspaceServiceImpl{}
+func NewWorkspaceService(repo domain.WorkspaceRepository) WorkspaceService {
+	return &workspaceServiceImpl{repo: repo}
 }
 
 func (s *workspaceServiceImpl) ListWorkspaces() ([]domain.Workspace, error) {
-	raw, err := infrastructure.FindAll()
+	raw, err := s.repo.FindAll()
 	if err != nil {
 		return nil, err
 	}

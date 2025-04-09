@@ -3,6 +3,7 @@ package routes
 import (
 	"server/application"
 	"server/controllers"
+	"server/infrastructure"
 	"server/ui"
 
 	"github.com/labstack/echo/v4"
@@ -38,7 +39,7 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.CreateWorkspace(c)
 	})
 
-	handler := ui.NewWorkspaceController(application.NewWorkspaceService())
+	handler := ui.NewWorkspaceController(application.NewWorkspaceService(infrastructure.NewWorkspaceRepository()))
 	e.GET("/workspaces", handler.ListWorkspaces)
 	e.GET("/workspaces/:id", handler.GetWorkspace)
 
