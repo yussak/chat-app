@@ -15,7 +15,7 @@ jobs:
 
       - name: Go build & test
         run: |
-          cd backend
+          cd server
           go build .
           go test -v
 
@@ -31,7 +31,7 @@ jobs:
           node-version: "22.14.0"
 
       - name: frontend install & build
-        working-directory: ./frontend
+        working-directory: ./client
         run: |
           yarn install
           yarn run build
