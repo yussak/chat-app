@@ -19,23 +19,11 @@ func NewWorkspaceService(repo domain.WorkspaceRepository) WorkspaceService {
 }
 
 func (s *workspaceServiceImpl) ListWorkspaces() ([]domain.Workspace, error) {
-	raw, err := s.repo.FindAll()
+	workspaces, err := s.repo.FindAll()
 	if err != nil {
 		return nil, err
 	}
-
-	var result []domain.Workspace
-	for _, w := range raw {
-		result = append(result, domain.Workspace{
-			ID:        w.ID,
-			Name:      w.Name,
-			Theme:     w.Theme,
-			OwnerID:   w.OwnerID,
-			CreatedAt: w.CreatedAt,
-			UpdatedAt: w.UpdatedAt,
-		})
-	}
-	return result, nil
+	return workspaces, nil
 }
 
 func ListSidebarProps() ([]infrastructure.WorkspaceSidebarProps, error) {
