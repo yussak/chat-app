@@ -39,7 +39,7 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.CreateWorkspace(c)
 	})
 
-	handler := ui.NewWorkspaceController(application.NewWorkspaceService(infrastructure.NewWorkspaceRepository()))
+	handler := ui.NewWorkspaceController(application.NewWorkspaceService(infrastructure.NewWorkspaceRepositoryImpl()))
 	e.GET("/workspaces", handler.ListWorkspaces)
 	e.GET("/workspaces/:id", handler.GetWorkspace)
 

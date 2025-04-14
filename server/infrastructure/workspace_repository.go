@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"database/sql"
 	"server/db"
+	"server/domain"
 	"time"
 )
 
@@ -41,7 +42,13 @@ type WorkspaceSidebarProps struct {
 	YoungestChannelID int64  `json:"youngestChannelId"`
 }
 
-func (r *WorkspaceRepository) FindAll() ([]Workspace, error) {
+type WorkspaceRepositoryImpl struct {}
+
+func NewWorkspaceRepositoryImpl() domain.WorkspaceRepository {
+	return &WorkspaceRepositoryImpl{}
+}
+
+func (r *WorkspaceRepositoryImpl) FindAll() ([]domain.Workspace, error) {
 	query := `SELECT id, name, owner_id, theme, created_at, updated_at FROM workspaces`
 	rows, err := db.DB.Query(query)
 	if err != nil {
@@ -49,9 +56,9 @@ func (r *WorkspaceRepository) FindAll() ([]Workspace, error) {
 	}
 	defer rows.Close()
 
-	var workspaces []Workspace
+	var workspaces []domain.Workspace
 	for rows.Next() {
-		var workspace Workspace
+		var workspace domain.Workspace
 		if err := rows.Scan(&workspace.ID, &workspace.Name, &workspace.OwnerID, &workspace.Theme, &workspace.CreatedAt, &workspace.UpdatedAt); err != nil {
 			return nil, err
 		}

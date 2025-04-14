@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"server/infrastructure"
 	"time"
 )
 
@@ -20,6 +19,6 @@ type WorkspaceWithChannels struct {
 }
 
 type WorkspaceRepository interface {
-	FindAll() ([]infrastructure.Workspace, error)
+	FindAll() ([]Workspace, error)
 }
 
