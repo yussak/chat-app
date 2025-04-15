@@ -41,7 +41,7 @@ func (h *WorkspaceController) GetWorkspace(c echo.Context) error {
 func GetSidebarProps(c echo.Context) error {
 	workspaces, err := application.ListSidebarProps()
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find workspaces"})
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find sidebar props"})
 	}
 
 	return c.JSON(http.StatusOK, workspaces)
