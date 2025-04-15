@@ -4,36 +4,12 @@ import (
 	"database/sql"
 	"server/db"
 	"server/domain"
-	"time"
 )
 
 type WorkspaceRepository struct{}
 
 func NewWorkspaceRepository() *WorkspaceRepository {
 	return &WorkspaceRepository{}
-}
-
-type Workspace struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	OwnerID   int       `json:"ownerId"`
-	Theme     string    `json:"theme"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
-}
-
-type WorkspaceWithChannels struct {
-	Workspace
-	Channels []Channel `json:"channels"`
-}
-
-type Channel struct {
-	ID          int64     `json:"id"`
-	WorkspaceID int64     `json:"workspace_id"`
-	Name        string    `json:"name"`
-	IsPublic    bool      `json:"is_public"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
 }
 
 type WorkspaceSidebarProps struct {
