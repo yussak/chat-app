@@ -39,18 +39,14 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.CreateWorkspace(c)
 	})
 
-	handler := ui.NewWorkspaceController(application.NewWorkspaceService(infrastructure.NewWorkspaceRepositoryImpl()))
-	navigationHandler := ui.NewNavigationController(application.NewNavigationService(infrastructure.NewNavigationRepositoryImpl()))
-	e.GET("/workspaces", handler.ListWorkspaces)
-	e.GET("/workspaces/:id", handler.GetWorkspace)
-
+	workspaceHandler := ui.NewWorkspaceController(application.NewWorkspaceService(infrastructure.NewWorkspaceRepositoryImpl()))
+	e.GET("/workspaces", workspaceHandler.ListWorkspaces)
+	e.GET("/workspaces/:id", workspaceHandler.GetWorkspace)
+	
 	e.GET("/channels/:id", func(c echo.Context) error {
 		return controllers.GetChannel(c)
 	})
-
+	
+	navigationHandler := ui.NewNavigationController(application.NewNavigationService(infrastructure.NewNavigationRepositoryImpl()))
 	e.GET("/sidebar", navigationHandler.GetSidebarProps)
-
-	// e.GET("/sidebar", func(c echo.Context) error {
-	// 	return ui.GetSidebarProps(c)
-	// })
 }
