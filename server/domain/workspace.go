@@ -20,5 +20,6 @@ type WorkspaceWithChannels struct {
 
 type WorkspaceRepository interface {
 	FindAll() ([]Workspace, error)
+	FindById(id string) (*WorkspaceWithChannels, error)
 }
 

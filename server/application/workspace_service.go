@@ -35,34 +35,10 @@ func ListSidebarProps() ([]infrastructure.WorkspaceSidebarProps, error) {
 }
 
 func (s *workspaceServiceImpl) GetWorkspace(id string) (*domain.WorkspaceWithChannels, error) {
-	raw, err := infrastructure.FindById(id)
+	workspace, err := s.repo.FindById(id)
 	if err != nil {
 		return nil, err
 	}
 
-	// todo:dto使うべきなら対応
-	return &domain.WorkspaceWithChannels{
-		Workspace: domain.Workspace{
-			ID:        raw.Workspace.ID,
-			Name:      raw.Workspace.Name,
-			Theme:     raw.Workspace.Theme,
-			OwnerID:   raw.Workspace.OwnerID,
-			CreatedAt: raw.Workspace.CreatedAt,
-			UpdatedAt: raw.Workspace.UpdatedAt,
-		},
-		Channels: func() []domain.Channel {
-			var channels []domain.Channel
-			for _, c := range raw.Channels {
-				channels = append(channels, domain.Channel{
-					ID:          c.ID,
-					WorkspaceID: c.WorkspaceID,
-					Name:        c.Name,
-					IsPublic:    c.IsPublic,
-					CreatedAt:   c.CreatedAt,
-					UpdatedAt:   c.UpdatedAt,
-				})
-			}
-			return channels
-		}(),
-	}, nil
+	return workspace, nil
 }

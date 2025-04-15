@@ -68,10 +68,10 @@ func (r *WorkspaceRepositoryImpl) FindAll() ([]domain.Workspace, error) {
 	return workspaces, nil
 }
 
-func FindById(id string) (*WorkspaceWithChannels, error) {
+func (r *WorkspaceRepositoryImpl) FindById(id string) (*domain.WorkspaceWithChannels, error) {
 	// ワークスペース情報を取得
 	workspaceQuery := `SELECT id, name, owner_id, theme, created_at, updated_at FROM workspaces WHERE id = $1`
-	var workspace Workspace
+	var workspace domain.Workspace
 	err := db.DB.QueryRow(workspaceQuery, id).Scan(&workspace.ID, &workspace.Name, &workspace.OwnerID, &workspace.Theme, &workspace.CreatedAt, &workspace.UpdatedAt)
 	if err != nil {
 		return nil, err
@@ -85,9 +85,9 @@ func FindById(id string) (*WorkspaceWithChannels, error) {
 	}
 	defer rows.Close()
 
-	var channels []Channel
+	var channels []domain.Channel
 	for rows.Next() {
-		var channel Channel
+		var channel domain.Channel
 		err := rows.Scan(&channel.ID, &channel.WorkspaceID, &channel.Name, &channel.IsPublic, &channel.CreatedAt, &channel.UpdatedAt)
 		if err != nil {
 			return nil, err
@@ -96,7 +96,7 @@ func FindById(id string) (*WorkspaceWithChannels, error) {
 	}
 
 	// ワークスペースとチャンネル情報を結合
-	response := WorkspaceWithChannels{
+	response := domain.WorkspaceWithChannels{
 		Workspace: workspace,
 		Channels:  channels,
 	}
