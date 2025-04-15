@@ -14,6 +14,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// モックリポジトリ（WorkspaceRepositoryインターフェース実装）
+type mockWorkspaceRepository struct {
+	workspaces []domain.Workspace
+	workspace  *domain.WorkspaceWithChannels
+	err        error
+}
+
+func (m *mockWorkspaceRepository) FindAll() ([]domain.Workspace, error) {
+	return m.workspaces, m.err
+}
+
+func (m *mockWorkspaceRepository) FindById(id string) (*domain.WorkspaceWithChannels, error) {
+	return m.workspace, m.err
+}
+
 // モックサービス（WorkspaceServiceインターフェース実装）
 type mockWorkspaceService struct {
 	workspaces []domain.Workspace
@@ -49,14 +64,17 @@ func TestListWorkspaces_Success(t *testing.T) {
 		},
 	}
 
-	// モックサービスを生成し、テスト用のダミーデータを返すように設定
-	mockService := &mockWorkspaceService{
+	// モックリポジトリを生成し、テスト用のダミーデータを返すように設定
+	mockRepo := &mockWorkspaceRepository{
 		workspaces: dummyWorkspaces,
 		err:        nil,
 	}
 
-	// コントローラにモックサービスを注入
-	handler := NewWorkspaceController(application.NewWorkspaceService(mockService))
+	// ワークスペースサービスにモックリポジトリを注入
+	service := application.NewWorkspaceService(mockRepo)
+	
+	// コントローラにサービスを注入
+	handler := NewWorkspaceController(service)
 
 	// 実行
 	err := handler.ListWorkspaces(c)
