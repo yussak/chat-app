@@ -38,8 +38,9 @@ func (h *WorkspaceController) GetWorkspace(c echo.Context) error {
 	return c.JSON(http.StatusOK, workspace)
 }
 
-func GetSidebarProps(c echo.Context) error {
-	workspaces, err := application.ListSidebarProps()
+// todo: sidebar用controller作るべきかも
+func (h *WorkspaceController) GetSidebarProps(c echo.Context) error {
+	workspaces, err := h.Service.ListSidebarProps()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find sidebar props"})
 	}

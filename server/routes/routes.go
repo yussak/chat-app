@@ -47,7 +47,9 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.GetChannel(c)
 	})
 
-	e.GET("/sidebar", func(c echo.Context) error {
-		return ui.GetSidebarProps(c)
-	})
+	e.GET("/sidebar", handler.GetSidebarProps)
+
+	// e.GET("/sidebar", func(c echo.Context) error {
+	// 	return ui.GetSidebarProps(c)
+	// })
 }

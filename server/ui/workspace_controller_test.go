@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"server/application"
 	"server/domain"
 
 	"github.com/labstack/echo/v4"
@@ -55,7 +56,7 @@ func TestListWorkspaces_Success(t *testing.T) {
 	}
 
 	// コントローラにモックサービスを注入
-	handler := NewWorkspaceController(mockService)
+	handler := NewWorkspaceController(application.NewWorkspaceService(mockService))
 
 	// 実行
 	err := handler.ListWorkspaces(c)

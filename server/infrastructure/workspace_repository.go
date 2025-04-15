@@ -12,12 +12,6 @@ func NewWorkspaceRepository() *WorkspaceRepository {
 	return &WorkspaceRepository{}
 }
 
-type WorkspaceSidebarProps struct {
-	ID                int    `json:"id"`
-	Name              string `json:"name"`
-	YoungestChannelID int64  `json:"youngestChannelId"`
-}
-
 type WorkspaceRepositoryImpl struct {}
 
 func NewWorkspaceRepositoryImpl() domain.WorkspaceRepository {
@@ -45,6 +39,7 @@ func (r *WorkspaceRepositoryImpl) FindAll() ([]domain.Workspace, error) {
 }
 
 func (r *WorkspaceRepositoryImpl) FindById(id string) (*domain.WorkspaceWithChannels, error) {
+  // todo: sqlはまとめて実行
 	// ワークスペース情報を取得
 	workspaceQuery := `SELECT id, name, owner_id, theme, created_at, updated_at FROM workspaces WHERE id = $1`
 	var workspace domain.Workspace
@@ -80,8 +75,7 @@ func (r *WorkspaceRepositoryImpl) FindById(id string) (*domain.WorkspaceWithChan
 	return &response, nil
 }
 
-func GetSidebarProps() ([]WorkspaceSidebarProps, error) {
-	// ワークスペースとその最小チャンネルIDを取得するクエリ
+func (r *WorkspaceRepositoryImpl) GetSidebarProps() ([]domain.WorkspaceSidebarProps, error) {
 	query := `
 		SELECT w.id, w.name, MIN(c.id) as channel_id
 		FROM workspaces w
@@ -94,9 +88,9 @@ func GetSidebarProps() ([]WorkspaceSidebarProps, error) {
 	}
 	defer rows.Close()
 
-	var workspaces []WorkspaceSidebarProps
+	var workspaces []domain.WorkspaceSidebarProps
 	for rows.Next() {
-		var workspace WorkspaceSidebarProps
+		var workspace domain.WorkspaceSidebarProps
 		var channelID sql.NullInt64
 		if err := rows.Scan(&workspace.ID, &workspace.Name, &channelID); err != nil {
 			return nil, err
