@@ -7,7 +7,6 @@ import (
 type WorkspaceService interface {
 	ListWorkspaces() ([]domain.Workspace, error)
 	GetWorkspace(id string) (*domain.WorkspaceWithChannels, error)
-	ListSidebarProps() ([]domain.WorkspaceSidebarProps, error)
 }
 
 type workspaceServiceImpl struct {
@@ -33,12 +32,4 @@ func (s *workspaceServiceImpl) GetWorkspace(id string) (*domain.WorkspaceWithCha
 	}
 
 	return workspace, nil
-}
-
-func (s *workspaceServiceImpl) ListSidebarProps() ([]domain.WorkspaceSidebarProps, error) {
-	props, err := s.repo.GetSidebarProps()
-	if err != nil {
-		return nil, err
-	}
-	return props, nil
 }

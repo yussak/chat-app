@@ -1,7 +1,6 @@
 package infrastructure
 
 import (
-	"database/sql"
 	"server/db"
 	"server/domain"
 )
@@ -73,33 +72,4 @@ func (r *WorkspaceRepositoryImpl) FindById(id string) (*domain.WorkspaceWithChan
 	}
 
 	return &response, nil
-}
-
-func (r *WorkspaceRepositoryImpl) GetSidebarProps() ([]domain.WorkspaceSidebarProps, error) {
-	query := `
-		SELECT w.id, w.name, MIN(c.id) as channel_id
-		FROM workspaces w
-		LEFT JOIN channels c ON w.id = c.workspace_id
-		GROUP BY w.id, w.name
-	`
-	rows, err := db.DB.Query(query)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var workspaces []domain.WorkspaceSidebarProps
-	for rows.Next() {
-		var workspace domain.WorkspaceSidebarProps
-		var channelID sql.NullInt64
-		if err := rows.Scan(&workspace.ID, &workspace.Name, &channelID); err != nil {
-			return nil, err
-		}
-		if channelID.Valid {
-			workspace.YoungestChannelID = channelID.Int64
-		}
-		workspaces = append(workspaces, workspace)
-	}
-
-	return workspaces, nil
 }

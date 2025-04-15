@@ -18,14 +18,7 @@ type WorkspaceWithChannels struct {
 	Channels []Channel `json:"channels"`
 }
 
-type WorkspaceSidebarProps struct {
-	ID                int    `json:"id"`
-	Name              string `json:"name"`
-	YoungestChannelID int64  `json:"youngestChannelId"`
-}
-
 type WorkspaceRepository interface {
 	FindAll() ([]Workspace, error)
 	FindById(id string) (*WorkspaceWithChannels, error)
-	GetSidebarProps() ([]WorkspaceSidebarProps, error)
 }

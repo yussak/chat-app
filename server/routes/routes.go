@@ -40,6 +40,7 @@ func SetupRoutes(e *echo.Echo) {
 	})
 
 	handler := ui.NewWorkspaceController(application.NewWorkspaceService(infrastructure.NewWorkspaceRepositoryImpl()))
+	navigationHandler := ui.NewNavigationController(application.NewNavigationService(infrastructure.NewNavigationRepositoryImpl()))
 	e.GET("/workspaces", handler.ListWorkspaces)
 	e.GET("/workspaces/:id", handler.GetWorkspace)
 
@@ -47,7 +48,7 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.GetChannel(c)
 	})
 
-	e.GET("/sidebar", handler.GetSidebarProps)
+	e.GET("/sidebar", navigationHandler.GetSidebarProps)
 
 	// e.GET("/sidebar", func(c echo.Context) error {
 	// 	return ui.GetSidebarProps(c)
