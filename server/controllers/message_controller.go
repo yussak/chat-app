@@ -8,20 +8,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func ListMessages(c echo.Context) error {
-	channelID := c.QueryParam("channel_id")
-	if channelID == "" {
-		return c.String(http.StatusBadRequest, "ChannelIDが必要です")
-	}
-
-	messages, err := models.GetMessages(channelID)
-	if err != nil {
-		return c.String(http.StatusInternalServerError, "データベースエラー: " + err.Error())
-	}
-
-	return c.JSON(http.StatusOK, messages)
-}
-
 func AddMessage(c echo.Context) error {
 	var req models.Message
 

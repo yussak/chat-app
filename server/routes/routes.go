@@ -18,12 +18,10 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.EmailExistsHandler(c)
 	})
 
-	e.GET("/messages", func(c echo.Context) error {
-		return controllers.ListMessages(c)
-	})
 	e.POST("/messages", func(c echo.Context) error {
 		return controllers.AddMessage(c)
 	})
+
 	e.DELETE("/messages/:id", func(c echo.Context) error {
 		return controllers.DeleteMessage(c)
 	})
@@ -40,13 +38,15 @@ func SetupRoutes(e *echo.Echo) {
 	})
 
 	workspaceHandler := ui.NewWorkspaceController(application.NewWorkspaceService(infrastructure.NewWorkspaceRepositoryImpl()))
+	messageHandler := ui.NewMessageController(application.NewMessageService(infrastructure.NewMessageRepositoryImpl()))
+	e.GET("/messages", messageHandler.ListMessages)
 	e.GET("/workspaces", workspaceHandler.ListWorkspaces)
 	e.GET("/workspaces/:id", workspaceHandler.GetWorkspace)
-	
+
 	e.GET("/channels/:id", func(c echo.Context) error {
 		return controllers.GetChannel(c)
 	})
-	
+
 	navigationHandler := ui.NewNavigationController(application.NewNavigationService(infrastructure.NewNavigationRepositoryImpl()))
 	e.GET("/sidebar", navigationHandler.GetSidebarProps)
 }
