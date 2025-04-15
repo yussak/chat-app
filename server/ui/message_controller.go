@@ -15,13 +15,13 @@ func NewMessageController(s application.MessageService) *MessageController {
 	return &MessageController{Service: s}
 }
 
-func (h *MessageController) ListMessages(c echo.Context) error {
+func (h *MessageController) GetMessagesHandler(c echo.Context) error {
 	channelID := c.QueryParam("channel_id")
 	if channelID == "" {
 		return c.String(http.StatusBadRequest, "ChannelIDが必要です")
 	}
 
-	messages, err := h.Service.GetMessages(channelID)
+	messages, err := h.Service.ListMessagesByChannelID(channelID)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー: " + err.Error())
 	}

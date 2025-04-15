@@ -18,7 +18,7 @@ func NewMessageRepositoryImpl() domain.MessageRepository {
 	return &MessageRepositoryImpl{}
 }
 
-func (r *MessageRepositoryImpl) Get(channelID string) ([]domain.Message, error) {
+func (r *MessageRepositoryImpl) FindByChannelID(channelID string) ([]domain.Message, error) {
 	query := `
 		SELECT
 			m.id,

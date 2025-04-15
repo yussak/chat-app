@@ -16,5 +16,5 @@ type Message struct {
 }
 
 type MessageRepository interface {
-	Get(channelID string) ([]Message, error)
+	FindByChannelID(channelID string) ([]Message, error)
 }

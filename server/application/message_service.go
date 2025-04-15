@@ -5,7 +5,7 @@ import (
 )
 
 type MessageService interface {
-	GetMessages(channelID string) ([]domain.Message, error)
+	ListMessagesByChannelID(channelID string) ([]domain.Message, error)
 }
 
 type MessageServiceImpl struct {
@@ -16,8 +16,8 @@ func NewMessageService(repo domain.MessageRepository) MessageService {
 	return &MessageServiceImpl{repo: repo}
 }
 
-func (s *MessageServiceImpl) GetMessages(channelID string) ([]domain.Message, error) {
-	messages, err := s.repo.Get(channelID)
+func (s *MessageServiceImpl) ListMessagesByChannelID(channelID string) ([]domain.Message, error) {
+	messages, err := s.repo.FindByChannelID(channelID)
 	if err != nil {
 		return nil, err
 	}
