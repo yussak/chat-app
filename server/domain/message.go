@@ -19,6 +19,7 @@ type Message struct {
 	Reactions string    `json:"reactions"`
 }
 
+// todo:string intなどはよくなさそうなので改善
 type MessageRepository interface {
 	FindByChannelID(channelID string) ([]Message, error)
 	AddMessage(content string, channelID int, userID int) (Message, error)
