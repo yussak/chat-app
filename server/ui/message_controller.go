@@ -73,7 +73,8 @@ func (h *MessageController) DeleteMessageHandler(c echo.Context) error {
 	}
 
 	// トランザクションを開始
-	// todo: db.DB.Begin()はroutes層でやるべきかも uiがdbに依存はダメそう
+	// todo: db.DB.Begin()はmain.goでやるべきかも
+	// インフラ層にtransactionの関数を用意してmain.goでDIしたけど、結局app, uiが*sql.Txを持ってしまっていたので一旦この状態に戻した
 	tx, err := db.DB.Begin()
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "トランザクション開始エラー")
