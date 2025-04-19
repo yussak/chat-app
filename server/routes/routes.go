@@ -29,9 +29,16 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.CreateWorkspace(c)
 	})
 
-	// todo:一気に変更せず変数作りながらやりたい messageRepo := ..のように
-	workspaceHandler := ui.NewWorkspaceController(application.NewWorkspaceService(infrastructure.NewWorkspaceRepository()))
-	messageHandler := ui.NewMessageController(application.NewMessageService(infrastructure.NewMessageRepository(), infrastructure.NewReactionRepository()))
+	// tood:これroutesじゃなくmainなどでやるべきかも
+
+	workspaceRepo := infrastructure.NewWorkspaceRepository()
+	workspaceService := application.NewWorkspaceService(workspaceRepo)
+	workspaceHandler := ui.NewWorkspaceController(workspaceService)
+
+	reactionRepo := infrastructure.NewReactionRepository()
+	messageRepo := infrastructure.NewMessageRepository()
+	messageService := application.NewMessageService(messageRepo, reactionRepo)
+	messageHandler := ui.NewMessageController(messageService)
 
 	e.GET("/messages", messageHandler.GetMessagesHandler)
 	e.POST("/messages", messageHandler.AddMessageHandler)
