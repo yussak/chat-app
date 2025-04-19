@@ -58,12 +58,8 @@ export default function Channel() {
   const postMessage = (content: string) =>
     api.post("/messages", {
       content,
-      user: {
-        id: Number(session?.user?.id),
-        name: session?.user?.name,
-        image: session?.user?.image,
-      },
       channel_id: Number(id),
+      user_id: Number(session?.user?.id),
     });
 
   useEffect(() => {
