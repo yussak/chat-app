@@ -28,10 +28,15 @@ func main() {
 	messageService := application.NewMessageService(messageRepo, reactionRepo)
 	messageHandler := ui.NewMessageController(messageService)
 
+	navigationRepo := infrastructure.NewNavigationRepository()
+	navigationService := application.NewNavigationService(navigationRepo)
+	navigationHandler := ui.NewNavigationController(navigationService)
+
 	// ポインタとして保持
 	handlers := &routes.Handlers{
-		Workspace: workspaceHandler,
-		Message:   messageHandler,
+		Workspace:  workspaceHandler,
+		Message:    messageHandler,
+		Navigation: navigationHandler,
 	}
 
 	e := echo.New()

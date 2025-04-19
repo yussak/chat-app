@@ -1,17 +1,16 @@
 package routes
 
 import (
-	"server/application"
 	"server/controllers"
-	"server/infrastructure"
 	"server/ui"
 
 	"github.com/labstack/echo/v4"
 )
 
 type Handlers struct {
-	Workspace *ui.WorkspaceController
-	Message   *ui.MessageController
+	Workspace  *ui.WorkspaceController
+	Message    *ui.MessageController
+	Navigation *ui.NavigationController
 }
 
 func SetupRoutes(e *echo.Echo, h *Handlers) {
@@ -45,6 +44,5 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 		return controllers.GetChannel(c)
 	})
 
-	navigationHandler := ui.NewNavigationController(application.NewNavigationService(infrastructure.NewNavigationRepositoryImpl()))
-	e.GET("/sidebar", navigationHandler.GetSidebarProps)
+	e.GET("/sidebar", h.Navigation.GetSidebarProps)
 }

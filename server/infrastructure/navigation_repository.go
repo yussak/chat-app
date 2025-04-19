@@ -12,14 +12,7 @@ func NewNavigationRepository() *NavigationRepository {
 	return &NavigationRepository{}
 }
 
-type NavigationRepositoryImpl struct {}
-
-func NewNavigationRepositoryImpl() domain.NavigationRepository {
-	return &NavigationRepositoryImpl{}
-}
-
-
-func (r *NavigationRepositoryImpl) GetSidebarProps() ([]domain.NavigationSidebarProps, error) {
+func (r *NavigationRepository) GetSidebarProps() ([]domain.NavigationSidebarProps, error) {
 	query := `
 		SELECT w.id, w.name, MIN(c.id) as channel_id
 		FROM workspaces w
