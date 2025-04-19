@@ -34,9 +34,9 @@ func main() {
 
 	// ポインタとして保持
 	handlers := &routes.Handlers{
-		Workspace:  workspaceHandler,
-		Message:    messageHandler,
-		Navigation: navigationHandler,
+		WorkspaceController:  workspaceHandler,
+		MessageController:    messageHandler,
+		NavigationController: navigationHandler,
 	}
 
 	e := echo.New()
