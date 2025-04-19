@@ -68,20 +68,15 @@ func (h *MessageController) DeleteMessageHandler(c echo.Context) error {
 	}
 
 	// トランザクションを開始
+	// tood:トランザクションをアプリ層に移動
 	tx, err := db.DB.Begin()
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "トランザクション開始エラー")
 	}
 	defer tx.Rollback()
 
-	// まずリアクションを削除
-	// todo:ここじゃなくサービス層でやるべきかもしれない
-	err = h.Service.DeleteReaction(id, tx)
-	if err != nil {
-		return c.String(http.StatusInternalServerError, "リアクション削除エラー")
-	}
-
-	err = h.Service.DeleteMessage(id, tx)
+	// 関連データを含めて削除
+	err = h.Service.DeleteMessageAndRelationData(id, tx)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "メッセージ削除エラー")
 	}

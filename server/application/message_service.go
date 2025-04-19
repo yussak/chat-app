@@ -8,9 +8,7 @@ import (
 type MessageService interface {
 	ListMessagesByChannelID(channelID string) ([]domain.Message, error)
 	AddMessage(content string, channelID int, userID int) (domain.Message, error)
-	DeleteMessage(id string, tx *sql.Tx) error
-	// 一旦ここに書く
-	DeleteReaction(id string, tx *sql.Tx) error
+	DeleteMessageAndRelationData(id string, tx *sql.Tx) error
 }
 
 type MessageServiceImpl struct {
@@ -40,11 +38,16 @@ func (s *MessageServiceImpl) AddMessage(content string, channelID int, userID in
 	return message, nil
 }
 
-func (s *MessageServiceImpl) DeleteMessage(id string, tx *sql.Tx) error {
-	// todo:ここでdelete reactionも呼び出すかも　その場合repo deletemessageからdelete reactionの処理も外すかを検討
-	return s.repo.Delete(id, tx)
-}
+func (s *MessageServiceImpl) DeleteMessageAndRelationData(id string, tx *sql.Tx) error {
+	err := s.reactionRepo.Delete(id, tx)
+	if err != nil {
+		return err
+	}
 
-func (s *MessageServiceImpl) DeleteReaction(id string, tx *sql.Tx) error {
-	return s.reactionRepo.Delete(id, tx)
+	err = s.repo.Delete(id, tx)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
