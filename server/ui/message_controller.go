@@ -31,6 +31,7 @@ func (h *MessageController) GetMessagesHandler(c echo.Context) error {
 }
 
 func (h *MessageController) AddMessageHandler(c echo.Context) error {
+	// todo:プレゼン層はdomainに依存するのはダメなので直す
 	var req domain.Message
 
 	// JSONボディをバインド
@@ -47,9 +48,7 @@ func (h *MessageController) AddMessageHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "UserIDが必要です")
 	}
 
-	// newMessage, err := h.Service.AddMessage(req.Content, req.ChannelID, req.User.ID)
 	newMessage, err := h.Service.AddMessage(req.Content, req.ChannelID, req.User)
-	// newMessage, err := models.AddMessage(req.Content, req.ChannelID, req.User)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー: " + err.Error())
 	}
