@@ -24,7 +24,7 @@ func (h *MessageController) GetMessagesHandler(c echo.Context) error {
 
 	messages, err := h.Service.ListMessagesByChannelID(channelID)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "データベースエラー: " + err.Error())
+		return c.String(http.StatusInternalServerError, "データベースエラー: "+err.Error())
 	}
 
 	return c.JSON(http.StatusOK, messages)
@@ -48,9 +48,9 @@ func (h *MessageController) AddMessageHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "UserIDが必要です")
 	}
 
-	newMessage, err := h.Service.AddMessage(req.Content, req.ChannelID, req.User)
+	newMessage, err := h.Service.AddMessage(req.Content, req.ChannelID, req.User.ID)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "データベースエラー: " + err.Error())
+		return c.String(http.StatusInternalServerError, "データベースエラー: "+err.Error())
 	}
 
 	return c.JSON(http.StatusOK, newMessage)

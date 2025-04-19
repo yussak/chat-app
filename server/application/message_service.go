@@ -6,7 +6,7 @@ import (
 
 type MessageService interface {
 	ListMessagesByChannelID(channelID string) ([]domain.Message, error)
-  AddMessage(content string, channelID int, user domain.UserInfo) (domain.Message, error )
+	AddMessage(content string, channelID int, userID int) (domain.Message, error)
 }
 
 type MessageServiceImpl struct {
@@ -26,11 +26,10 @@ func (s *MessageServiceImpl) ListMessagesByChannelID(channelID string) ([]domain
 	return messages, nil
 }
 
-// todo:そもそもUser丸ごと渡す必要ないかもしれないので確認
-  func (s *MessageServiceImpl) AddMessage(content string, channelID int, user domain.UserInfo) (domain.Message, error ){
-  message, err := s.repo.AddMessage(content, channelID, user)
-  if err != nil {
-    return domain.Message{}, err
-  }
-  return message, nil
+func (s *MessageServiceImpl) AddMessage(content string, channelID int, userID int) (domain.Message, error) {
+	message, err := s.repo.AddMessage(content, channelID, userID)
+	if err != nil {
+		return domain.Message{}, err
+	}
+	return message, nil
 }

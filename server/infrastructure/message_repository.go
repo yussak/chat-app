@@ -75,22 +75,25 @@ func (r *MessageRepositoryImpl) FindByChannelID(channelID string) ([]domain.Mess
 	return messages, nil
 }
 
-func (r *MessageRepositoryImpl) AddMessage(content string, channelID int, user domain.UserInfo) (domain.Message, error) {
+func (r *MessageRepositoryImpl) AddMessage(content string, channelID int, userID int) (domain.Message, error) {
 	var id int
 	var createdAt time.Time
-	err := db.DB.QueryRow(`INSERT INTO messages (content, user_id, channel_id) VALUES ($1, $2, $3) RETURNING id, created_at`, content, user.ID, channelID).Scan(&id, &createdAt)
+
+	err := db.DB.QueryRow(`INSERT INTO messages (content, user_id, channel_id) VALUES ($1, $2, $3) RETURNING id, created_at`, content, userID, channelID).Scan(&id, &createdAt)
 	if err != nil {
 		return domain.Message{}, err
 	}
 
-	// 登録したMessageをJSONで返す
+	var user domain.UserInfo
+	err = db.DB.QueryRow(`SELECT id, name, image FROM users WHERE id = $1`, userID).Scan(&user.ID, &user.Name, &user.Image)
+	if err != nil {
+		return domain.Message{}, err
+	}
+
 	newMessage := domain.Message{
-		ID:      id,
-		Content: content,
-		User: domain.UserInfo{
-			Name:  user.Name,
-			Image: user.Image,
-		},
+		ID:        id,
+		Content:   content,
+		User:      user,
 		ChannelID: channelID,
 		Reactions: "{}",
 		CreatedAt: createdAt,
