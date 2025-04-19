@@ -13,13 +13,7 @@ func NewMessageRepository() *MessageRepository {
 	return &MessageRepository{}
 }
 
-type MessageRepositoryImpl struct{}
-
-func NewMessageRepositoryImpl() domain.MessageRepository {
-	return &MessageRepositoryImpl{}
-}
-
-func (r *MessageRepositoryImpl) FindByChannelID(channelID string) ([]domain.Message, error) {
+func (r *MessageRepository) FindByChannelID(channelID string) ([]domain.Message, error) {
 	query := `
 		SELECT
 			m.id,
@@ -76,7 +70,7 @@ func (r *MessageRepositoryImpl) FindByChannelID(channelID string) ([]domain.Mess
 	return messages, nil
 }
 
-func (r *MessageRepositoryImpl) AddMessage(content string, channelID int, userID int) (domain.Message, error) {
+func (r *MessageRepository) AddMessage(content string, channelID int, userID int) (domain.Message, error) {
 	var id int
 	var createdAt time.Time
 
@@ -103,7 +97,7 @@ func (r *MessageRepositoryImpl) AddMessage(content string, channelID int, userID
 	return newMessage, nil
 }
 
-func (r *MessageRepositoryImpl) Delete(id string, tx *sql.Tx) error {
+func (r *MessageRepository) Delete(id string, tx *sql.Tx) error {
 	// まずリアクションを削除
 	_, err := db.DB.Exec("DELETE FROM reactions WHERE message_id = $1", id)
 	if err != nil {
