@@ -4,10 +4,8 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
-	"server/models"
-	"strings"
+	"server/ui"
 	"testing"
-	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
@@ -20,7 +18,9 @@ func TestListMessages_EmptyChannelID(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
-	ListMessages(c)
+	// MessageControllerを作成して使用
+	controller := ui.MessageController{}
+	controller.GetMessagesHandler(c)
 
 	assert.Equal(t, http.StatusBadRequest, rec.Code)
 	assert.Equal(t, "ChannelIDが必要です", rec.Body.String())
