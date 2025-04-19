@@ -52,10 +52,10 @@ func (h *MessageController) AddMessageHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "UserIDが必要です")
 	}
 
-	newMessage, err := h.Service.AddMessage(req.Content, req.ChannelID, req.UserID)
+	message, err := h.Service.AddMessage(req.Content, req.ChannelID, req.UserID)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー: "+err.Error())
 	}
 
-	return c.JSON(http.StatusOK, newMessage)
+	return c.JSON(http.StatusOK, message)
 }
