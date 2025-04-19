@@ -3,7 +3,6 @@ package ui
 import (
 	"net/http"
 	"server/application"
-	"server/domain"
 
 	"github.com/labstack/echo/v4"
 )
@@ -30,9 +29,14 @@ func (h *MessageController) GetMessagesHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, messages)
 }
 
+type AddMessageRequest struct {
+	Content   string `json:"content"`
+	ChannelID int    `json:"channel_id"`
+	UserID    int    `json:"user_id"`
+}
+
 func (h *MessageController) AddMessageHandler(c echo.Context) error {
-	// todo:プレゼン層はdomainに依存するのはダメなので直す
-	var req domain.Message
+	var req AddMessageRequest
 
 	// JSONボディをバインド
 	if err := c.Bind(&req); err != nil {
@@ -44,11 +48,11 @@ func (h *MessageController) AddMessageHandler(c echo.Context) error {
 	if req.ChannelID == 0 {
 		return c.String(http.StatusBadRequest, "ChannelIDが必要です")
 	}
-	if req.User.ID == 0 {
+	if req.UserID == 0 {
 		return c.String(http.StatusBadRequest, "UserIDが必要です")
 	}
 
-	newMessage, err := h.Service.AddMessage(req.Content, req.ChannelID, req.User.ID)
+	newMessage, err := h.Service.AddMessage(req.Content, req.ChannelID, req.UserID)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー: "+err.Error())
 	}
