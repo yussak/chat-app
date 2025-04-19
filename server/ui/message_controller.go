@@ -67,6 +67,11 @@ func (h *MessageController) DeleteMessageHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "IDが空です")
 	}
 
+	currentUserID := c.QueryParam("currentUserId")
+	if currentUserID == "" {
+		return c.String(http.StatusBadRequest, "currentUserIDが必要です")
+	}
+
 	// トランザクションを開始
 	// todo: db.DB.Begin()はroutes層でやるべきかも uiがdbに依存はダメそう
 	tx, err := db.DB.Begin()
@@ -76,7 +81,7 @@ func (h *MessageController) DeleteMessageHandler(c echo.Context) error {
 	defer tx.Rollback()
 
 	// 関連データを含めて削除
-	err = h.Service.DeleteMessageAndRelationData(id, tx)
+	err = h.Service.DeleteMessageAndRelationData(id, currentUserID, tx)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "メッセージ削除エラー")
 	}

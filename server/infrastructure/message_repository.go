@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"database/sql"
+	"errors"
 	"server/db"
 	"server/domain"
 	"time"
@@ -97,8 +98,23 @@ func (r *MessageRepository) AddMessage(content string, channelID int, userID int
 	return newMessage, nil
 }
 
-func (r *MessageRepository) Delete(id string, tx *sql.Tx) error {
-	_, err := tx.Exec("DELETE FROM messages WHERE id = $1", id)
+func (r *MessageRepository) Delete(id string, currentUserID string, tx *sql.Tx) error {
+	var messageUserID string
+	err := tx.QueryRow("SELECT user_id FROM messages WHERE id = $1", id).Scan(&messageUserID)
+	if err != nil {
+		return err
+	}
+
+	// 削除可能かを判定
+	message := domain.Message{
+		User: domain.UserInfo{ID: messageUserID},
+	}
+
+	if !message.CanDelete(currentUserID) {
+		return errors.New("メッセージを削除する権限がありません")
+	}
+
+	_, err = tx.Exec("DELETE FROM messages WHERE id = $1", id)
 	if err != nil {
 		return err
 	}

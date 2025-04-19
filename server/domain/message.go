@@ -6,7 +6,7 @@ import (
 )
 
 type UserInfo struct {
-	ID    int    `json:"id"`
+	ID    string `json:"id"`
 	Name  string `json:"name"`
 	Image string `json:"image"`
 }
@@ -25,5 +25,9 @@ type Message struct {
 type MessageRepository interface {
 	FindByChannelID(channelID string) ([]Message, error)
 	AddMessage(content string, channelID int, userID int) (Message, error)
-	Delete(id string, tx *sql.Tx) error
+	Delete(id string, currentUserID string, tx *sql.Tx) error
+}
+
+func (m *Message) CanDelete(currentUserID string) bool {
+	return m.User.ID == currentUserID
 }
