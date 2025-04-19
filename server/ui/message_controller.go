@@ -3,7 +3,7 @@ package ui
 import (
 	"net/http"
 	"server/application"
-	"server/models"
+	"server/domain"
 
 	"github.com/labstack/echo/v4"
 )
@@ -31,7 +31,7 @@ func (h *MessageController) GetMessagesHandler(c echo.Context) error {
 }
 
 func (h *MessageController) AddMessageHandler(c echo.Context) error {
-	var req models.Message
+	var req domain.Message
 
 	// JSONボディをバインド
 	if err := c.Bind(&req); err != nil {
@@ -47,7 +47,9 @@ func (h *MessageController) AddMessageHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "UserIDが必要です")
 	}
 
+	// newMessage, err := h.Service.AddMessage(req.Content, req.ChannelID, req.User.ID)
 	newMessage, err := h.Service.AddMessage(req.Content, req.ChannelID, req.User)
+	// newMessage, err := models.AddMessage(req.Content, req.ChannelID, req.User)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー: " + err.Error())
 	}

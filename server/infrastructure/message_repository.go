@@ -3,7 +3,6 @@ package infrastructure
 import (
 	"server/db"
 	"server/domain"
-	"server/models"
 	"time"
 )
 
@@ -54,8 +53,7 @@ func (r *MessageRepositoryImpl) FindByChannelID(channelID string) ([]domain.Mess
 
 	for rows.Next() {
 		message := domain.Message{}
-		// todo:domainにする(していいのか調べる)
-		user := models.User{}
+		user := domain.UserInfo{}
 		var reactionsJson []byte
 		if err := rows.Scan(
 			&message.ID,
@@ -77,7 +75,7 @@ func (r *MessageRepositoryImpl) FindByChannelID(channelID string) ([]domain.Mess
 	return messages, nil
 }
 
-func (r *MessageRepositoryImpl) AddMessage(content string, channelID int, user models.User) (domain.Message, error) {
+	func (r *MessageRepositoryImpl) AddMessage(content string, channelID int, user domain.UserInfo) (domain.Message, error) {
  // MessagesテーブルにINSERTして、INSERTしたレコードのIDを取得
  var insertedID int
  var createdAt time.Time
@@ -90,7 +88,10 @@ func (r *MessageRepositoryImpl) AddMessage(content string, channelID int, user m
  newMessage := domain.Message{
 	 ID:   insertedID,
 	 Content: content,
-	 User: user,
+	 User: domain.UserInfo{
+		Name: user.Name,
+		Image: user.Image,
+	 },
 	 ChannelID: channelID,
 	 Reactions: "{}",
 	 CreatedAt: createdAt,
