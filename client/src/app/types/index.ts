@@ -5,4 +5,9 @@ export type Message = {
   user_id: number;
   created_at: string;
   updated_at: string;
+  user: {
+    id: number;
+    name: string;
+    image: string;
+  };
 };
