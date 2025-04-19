@@ -9,14 +9,18 @@ type MessageService interface {
 	ListMessagesByChannelID(channelID string) ([]domain.Message, error)
 	AddMessage(content string, channelID int, userID int) (domain.Message, error)
 	DeleteMessage(id string, tx *sql.Tx) error
+	// 一旦ここに書く
+	DeleteReaction(id string, tx *sql.Tx) error
 }
 
 type MessageServiceImpl struct {
-	repo domain.MessageRepository
+	// todo:messageRepoにするかも
+	repo         domain.MessageRepository
+	reactionRepo domain.ReactionRepository
 }
 
-func NewMessageService(repo domain.MessageRepository) MessageService {
-	return &MessageServiceImpl{repo: repo}
+func NewMessageService(repo domain.MessageRepository, reactionRepo domain.ReactionRepository) MessageService {
+	return &MessageServiceImpl{repo: repo, reactionRepo: reactionRepo}
 }
 
 func (s *MessageServiceImpl) ListMessagesByChannelID(channelID string) ([]domain.Message, error) {
@@ -39,4 +43,8 @@ func (s *MessageServiceImpl) AddMessage(content string, channelID int, userID in
 func (s *MessageServiceImpl) DeleteMessage(id string, tx *sql.Tx) error {
 	// todo:ここでdelete reactionも呼び出すかも　その場合repo deletemessageからdelete reactionの処理も外すかを検討
 	return s.repo.Delete(id, tx)
+}
+
+func (s *MessageServiceImpl) DeleteReaction(id string, tx *sql.Tx) error {
+	return s.reactionRepo.Delete(id, tx)
 }

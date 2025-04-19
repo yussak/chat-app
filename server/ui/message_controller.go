@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"server/application"
 	"server/db"
-	"server/models"
 
 	"github.com/labstack/echo/v4"
 )
@@ -76,7 +75,8 @@ func (h *MessageController) DeleteMessageHandler(c echo.Context) error {
 	defer tx.Rollback()
 
 	// まずリアクションを削除
-	err = models.DeleteReaction(id, tx)
+	// todo:ここじゃなくサービス層でやるべきかもしれない
+	err = h.Service.DeleteReaction(id, tx)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "リアクション削除エラー")
 	}

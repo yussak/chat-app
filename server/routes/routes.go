@@ -30,7 +30,7 @@ func SetupRoutes(e *echo.Echo) {
 	})
 
 	workspaceHandler := ui.NewWorkspaceController(application.NewWorkspaceService(infrastructure.NewWorkspaceRepositoryImpl()))
-	messageHandler := ui.NewMessageController(application.NewMessageService(infrastructure.NewMessageRepositoryImpl()))
+	messageHandler := ui.NewMessageController(application.NewMessageService(infrastructure.NewMessageRepositoryImpl(), infrastructure.NewReactionRepository()))
 
 	e.GET("/messages", messageHandler.GetMessagesHandler)
 	e.POST("/messages", messageHandler.AddMessageHandler)
