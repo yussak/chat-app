@@ -53,7 +53,7 @@ export const MessageItem = ({
         >
           + 追加
         </button>
-        {message.user.id === session?.user?.id && (
+        {message.user.id == session?.user?.id && (
           <button
             type="button"
             onClick={() => handleDelete(message.id)}

@@ -126,7 +126,11 @@ export default function Channel() {
   };
 
   const handleDelete = async (messageId: number) => {
-    await api.delete(`/messages/${messageId}`);
+    await api.delete(`/messages/${messageId}`, {
+      params: {
+        currentUserId: session?.user?.id,
+      },
+    });
     setMessages(messages.filter((message) => message.id !== messageId));
   };
 
