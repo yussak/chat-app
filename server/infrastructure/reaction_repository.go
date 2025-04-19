@@ -11,7 +11,7 @@ func NewReactionRepository() *ReactionRepository {
 }
 
 func (r *ReactionRepository) Delete(id string, tx *sql.Tx) error {
-	_, err := tx.Exec("DELETE FROM reactions WHERE id = $1", id)
+	_, err := tx.Exec("DELETE FROM reactions WHERE message_id = $1", id)
 	if err != nil {
 		return err
 	}
