@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"database/sql"
 	"server/db"
 	"server/domain"
 	"time"
@@ -100,4 +101,20 @@ func (r *MessageRepositoryImpl) AddMessage(content string, channelID int, userID
 	}
 
 	return newMessage, nil
+}
+
+func (r *MessageRepositoryImpl) Delete(id string, tx *sql.Tx) error {
+	// まずリアクションを削除
+	_, err := db.DB.Exec("DELETE FROM reactions WHERE message_id = $1", id)
+	if err != nil {
+		return err
+	}
+
+	// メッセージを削除
+	_, err = tx.Exec("DELETE FROM messages WHERE id = $1", id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

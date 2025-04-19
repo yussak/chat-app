@@ -1,12 +1,14 @@
 package application
 
 import (
+	"database/sql"
 	"server/domain"
 )
 
 type MessageService interface {
 	ListMessagesByChannelID(channelID string) ([]domain.Message, error)
 	AddMessage(content string, channelID int, userID int) (domain.Message, error)
+	DeleteMessage(id string, tx *sql.Tx) error
 }
 
 type MessageServiceImpl struct {
@@ -32,4 +34,9 @@ func (s *MessageServiceImpl) AddMessage(content string, channelID int, userID in
 		return domain.Message{}, err
 	}
 	return message, nil
+}
+
+func (s *MessageServiceImpl) DeleteMessage(id string, tx *sql.Tx) error {
+	// todo:ここでdelete reactionも呼び出すかも　その場合repo deletemessageからdelete reactionの処理も外すかを検討
+	return s.repo.Delete(id, tx)
 }

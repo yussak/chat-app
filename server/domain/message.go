@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"database/sql"
 	"time"
 )
 
@@ -23,4 +24,5 @@ type Message struct {
 type MessageRepository interface {
 	FindByChannelID(channelID string) ([]Message, error)
 	AddMessage(content string, channelID int, userID int) (Message, error)
+	Delete(id string, tx *sql.Tx) error
 }
