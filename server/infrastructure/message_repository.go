@@ -12,7 +12,7 @@ func NewMessageRepository() *MessageRepository {
 	return &MessageRepository{}
 }
 
-type MessageRepositoryImpl struct {}
+type MessageRepositoryImpl struct{}
 
 func NewMessageRepositoryImpl() domain.MessageRepository {
 	return &MessageRepositoryImpl{}
@@ -75,27 +75,27 @@ func (r *MessageRepositoryImpl) FindByChannelID(channelID string) ([]domain.Mess
 	return messages, nil
 }
 
-	func (r *MessageRepositoryImpl) AddMessage(content string, channelID int, user domain.UserInfo) (domain.Message, error) {
- // MessagesテーブルにINSERTして、INSERTしたレコードのIDを取得
- var insertedID int
- var createdAt time.Time
- err := db.DB.QueryRow(`INSERT INTO messages (content, user_id, channel_id) VALUES ($1, $2, $3) RETURNING id, created_at`, content, user.ID, channelID).Scan(&insertedID, &createdAt)
- if err != nil {
-	 return domain.Message{}, err
- }
- 
- // 登録したMessageをJSONで返す
- newMessage := domain.Message{
-	 ID:   insertedID,
-	 Content: content,
-	 User: domain.UserInfo{
-		Name: user.Name,
-		Image: user.Image,
-	 },
-	 ChannelID: channelID,
-	 Reactions: "{}",
-	 CreatedAt: createdAt,
- }
- 
- return newMessage, nil
+func (r *MessageRepositoryImpl) AddMessage(content string, channelID int, user domain.UserInfo) (domain.Message, error) {
+	// MessagesテーブルにINSERTして、INSERTしたレコードのIDを取得
+	var insertedID int
+	var createdAt time.Time
+	err := db.DB.QueryRow(`INSERT INTO messages (content, user_id, channel_id) VALUES ($1, $2, $3) RETURNING id, created_at`, content, user.ID, channelID).Scan(&insertedID, &createdAt)
+	if err != nil {
+		return domain.Message{}, err
+	}
+
+	// 登録したMessageをJSONで返す
+	newMessage := domain.Message{
+		ID:      insertedID,
+		Content: content,
+		User: domain.UserInfo{
+			Name:  user.Name,
+			Image: user.Image,
+		},
+		ChannelID: channelID,
+		Reactions: "{}",
+		CreatedAt: createdAt,
+	}
+
+	return newMessage, nil
 }
