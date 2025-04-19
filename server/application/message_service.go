@@ -12,17 +12,16 @@ type MessageService interface {
 }
 
 type MessageServiceImpl struct {
-	// todo:messageRepoにするかも
-	repo         domain.MessageRepository
+	messageRepo  domain.MessageRepository
 	reactionRepo domain.ReactionRepository
 }
 
-func NewMessageService(repo domain.MessageRepository, reactionRepo domain.ReactionRepository) MessageService {
-	return &MessageServiceImpl{repo: repo, reactionRepo: reactionRepo}
+func NewMessageService(messageRepo domain.MessageRepository, reactionRepo domain.ReactionRepository) MessageService {
+	return &MessageServiceImpl{messageRepo: messageRepo, reactionRepo: reactionRepo}
 }
 
 func (s *MessageServiceImpl) ListMessagesByChannelID(channelID string) ([]domain.Message, error) {
-	messages, err := s.repo.FindByChannelID(channelID)
+	messages, err := s.messageRepo.FindByChannelID(channelID)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +30,7 @@ func (s *MessageServiceImpl) ListMessagesByChannelID(channelID string) ([]domain
 }
 
 func (s *MessageServiceImpl) AddMessage(content string, channelID int, userID int) (domain.Message, error) {
-	message, err := s.repo.AddMessage(content, channelID, userID)
+	message, err := s.messageRepo.AddMessage(content, channelID, userID)
 	if err != nil {
 		return domain.Message{}, err
 	}
@@ -44,7 +43,7 @@ func (s *MessageServiceImpl) DeleteMessageAndRelationData(id string, tx *sql.Tx)
 		return err
 	}
 
-	err = s.repo.Delete(id, tx)
+	err = s.messageRepo.Delete(id, tx)
 	if err != nil {
 		return err
 	}
