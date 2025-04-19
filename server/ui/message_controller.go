@@ -47,7 +47,7 @@ func (h *MessageController) AddMessageHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "UserIDが必要です")
 	}
 
-	newMessage, err := models.AddMessage(req.Content, req.ChannelID, req.User)
+	newMessage, err := h.Service.AddMessage(req.Content, req.ChannelID, req.User)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー: " + err.Error())
 	}
