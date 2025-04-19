@@ -17,7 +17,8 @@ type Message struct {
 	ChannelID int       `json:"channel_id"`
 	User      UserInfo  `json:"user"`
 	CreatedAt time.Time `json:"created_at"`
-	Reactions string    `json:"reactions"`
+	// todo:これstringでいいのか？
+	Reactions string `json:"reactions"`
 }
 
 // todo:string intなどはよくなさそうなので改善

@@ -6,7 +6,7 @@ import (
 )
 
 type MessageService interface {
-	ListMessagesByChannelID(channelID string) ([]domain.Message, error)
+	ListMessages(channelID string) ([]domain.Message, error)
 	AddMessage(content string, channelID int, userID int) (domain.Message, error)
 	DeleteMessageAndRelationData(id string, tx *sql.Tx) error
 }
@@ -20,7 +20,7 @@ func NewMessageService(messageRepo domain.MessageRepository, reactionRepo domain
 	return &MessageServiceImpl{messageRepo: messageRepo, reactionRepo: reactionRepo}
 }
 
-func (s *MessageServiceImpl) ListMessagesByChannelID(channelID string) ([]domain.Message, error) {
+func (s *MessageServiceImpl) ListMessages(channelID string) ([]domain.Message, error) {
 	messages, err := s.messageRepo.FindByChannelID(channelID)
 	if err != nil {
 		return nil, err

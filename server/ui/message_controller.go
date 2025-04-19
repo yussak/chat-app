@@ -22,7 +22,7 @@ func (h *MessageController) GetMessagesHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "ChannelIDが必要です")
 	}
 
-	messages, err := h.Service.ListMessagesByChannelID(channelID)
+	messages, err := h.Service.ListMessages(channelID)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "データベースエラー: "+err.Error())
 	}
