@@ -11,13 +11,7 @@ func NewWorkspaceRepository() *WorkspaceRepository {
 	return &WorkspaceRepository{}
 }
 
-type WorkspaceRepositoryImpl struct {}
-
-func NewWorkspaceRepositoryImpl() domain.WorkspaceRepository {
-	return &WorkspaceRepositoryImpl{}
-}
-
-func (r *WorkspaceRepositoryImpl) FindAll() ([]domain.Workspace, error) {
+func (r *WorkspaceRepository) FindAll() ([]domain.Workspace, error) {
 	query := `SELECT id, name, owner_id, theme, created_at, updated_at FROM workspaces`
 	rows, err := db.DB.Query(query)
 	if err != nil {
@@ -37,8 +31,8 @@ func (r *WorkspaceRepositoryImpl) FindAll() ([]domain.Workspace, error) {
 	return workspaces, nil
 }
 
-func (r *WorkspaceRepositoryImpl) FindById(id string) (*domain.WorkspaceWithChannels, error) {
-  // todo: sqlはまとめて実行
+func (r *WorkspaceRepository) FindById(id string) (*domain.WorkspaceWithChannels, error) {
+	// todo: sqlはまとめて実行
 	// ワークスペース情報を取得
 	workspaceQuery := `SELECT id, name, owner_id, theme, created_at, updated_at FROM workspaces WHERE id = $1`
 	var workspace domain.Workspace

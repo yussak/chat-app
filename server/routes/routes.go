@@ -29,7 +29,8 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.CreateWorkspace(c)
 	})
 
-	workspaceHandler := ui.NewWorkspaceController(application.NewWorkspaceService(infrastructure.NewWorkspaceRepositoryImpl()))
+	// todo:一気に変更せず変数作りながらやりたい messageRepo := ..のように
+	workspaceHandler := ui.NewWorkspaceController(application.NewWorkspaceService(infrastructure.NewWorkspaceRepository()))
 	messageHandler := ui.NewMessageController(application.NewMessageService(infrastructure.NewMessageRepositoryImpl(), infrastructure.NewReactionRepository()))
 
 	e.GET("/messages", messageHandler.GetMessagesHandler)
