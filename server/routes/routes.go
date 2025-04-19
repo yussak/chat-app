@@ -9,7 +9,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func SetupRoutes(e *echo.Echo) {
+type Handlers struct {
+	Workspace *ui.WorkspaceController
+	Message   *ui.MessageController
+}
+
+func SetupRoutes(e *echo.Echo, h *Handlers) {
 	e.POST("/users/signin", func(c echo.Context) error {
 		return controllers.SignInHandler(c)
 	})
@@ -29,23 +34,12 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.CreateWorkspace(c)
 	})
 
-	// tood:これroutesじゃなくmainなどでやるべきかも
+	e.GET("/messages", h.Message.GetMessagesHandler)
+	e.POST("/messages", h.Message.AddMessageHandler)
+	e.DELETE("/messages/:id", h.Message.DeleteMessageHandler)
 
-	workspaceRepo := infrastructure.NewWorkspaceRepository()
-	workspaceService := application.NewWorkspaceService(workspaceRepo)
-	workspaceHandler := ui.NewWorkspaceController(workspaceService)
-
-	reactionRepo := infrastructure.NewReactionRepository()
-	messageRepo := infrastructure.NewMessageRepository()
-	messageService := application.NewMessageService(messageRepo, reactionRepo)
-	messageHandler := ui.NewMessageController(messageService)
-
-	e.GET("/messages", messageHandler.GetMessagesHandler)
-	e.POST("/messages", messageHandler.AddMessageHandler)
-	e.DELETE("/messages/:id", messageHandler.DeleteMessageHandler)
-
-	e.GET("/workspaces", workspaceHandler.ListWorkspaces)
-	e.GET("/workspaces/:id", workspaceHandler.GetWorkspace)
+	e.GET("/workspaces", h.Workspace.ListWorkspaces)
+	e.GET("/workspaces/:id", h.Workspace.GetWorkspace)
 
 	e.GET("/channels/:id", func(c echo.Context) error {
 		return controllers.GetChannel(c)
