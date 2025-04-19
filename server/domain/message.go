@@ -17,4 +17,6 @@ type Message struct {
 
 type MessageRepository interface {
 	FindByChannelID(channelID string) ([]Message, error)
+	// todo:modelsの依存をなくす
+	AddMessage(content string, channelID int, user models.User) (Message, error)
 }

@@ -2,6 +2,7 @@ package application
 
 import (
 	"server/domain"
+	"server/models"
 )
 
 type MessageService interface {
@@ -23,4 +24,14 @@ func (s *MessageServiceImpl) ListMessagesByChannelID(channelID string) ([]domain
 	}
 
 	return messages, nil
+}
+
+// todo:一時的にmodelsにしてるので適切にする
+// todo:そもそもUser丸ごと渡す必要ないかもしれないので確認
+func (s *MessageServiceImpl) AddMessage(content string, channelID int, user models.User) (domain.Message, error ){
+  message, err := s.repo.AddMessage(content, channelID, user)
+  if err != nil {
+    return domain.Message{}, err
+  }
+  return message, nil
 }

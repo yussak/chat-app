@@ -18,10 +18,6 @@ func SetupRoutes(e *echo.Echo) {
 		return controllers.EmailExistsHandler(c)
 	})
 
-	e.POST("/messages", func(c echo.Context) error {
-		return controllers.AddMessage(c)
-	})
-
 	e.DELETE("/messages/:id", func(c echo.Context) error {
 		return controllers.DeleteMessage(c)
 	})
@@ -39,7 +35,10 @@ func SetupRoutes(e *echo.Echo) {
 
 	workspaceHandler := ui.NewWorkspaceController(application.NewWorkspaceService(infrastructure.NewWorkspaceRepositoryImpl()))
 	messageHandler := ui.NewMessageController(application.NewMessageService(infrastructure.NewMessageRepositoryImpl()))
+
 	e.GET("/messages", messageHandler.GetMessagesHandler)
+	e.POST("/messages", messageHandler.AddMessageHandler)
+
 	e.GET("/workspaces", workspaceHandler.ListWorkspaces)
 	e.GET("/workspaces/:id", workspaceHandler.GetWorkspace)
 
