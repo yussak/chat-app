@@ -4,7 +4,6 @@ import (
 	"database/sql"
 )
 
-// todo:ほかもこんな感じにレシーバなど改善
 type ReactionRepository struct{}
 
 func NewReactionRepository() *ReactionRepository {
