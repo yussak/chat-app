@@ -15,7 +15,7 @@ func NewNavigationController(s application.NavigationService) *NavigationControl
 	return &NavigationController{Service: s}
 }
 
-func (h *NavigationController) GetSidebarProps(c echo.Context) error {
+func (h *NavigationController) GetSidebarPropsHandler(c echo.Context) error {
 	workspaceNavItems, err := h.Service.ListSidebarProps()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find sidebar workspaceNavItems"})

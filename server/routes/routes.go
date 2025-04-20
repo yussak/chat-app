@@ -41,6 +41,5 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 		return controllers.GetChannel(c)
 	})
 
-	// todo:handlerに揃える
-	e.GET("/sidebar", h.NavigationController.GetSidebarProps)
+	e.GET("/sidebar", h.NavigationController.GetSidebarPropsHandler)
 }
