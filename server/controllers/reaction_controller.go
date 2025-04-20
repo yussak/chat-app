@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func ListReactions(c echo.Context) error  {
+func ListReactions(c echo.Context) error {
 	messageId := c.Param("id")
 	rows, err := db.DB.Query(`
 	SELECT emoji, COUNT(*)
@@ -24,7 +24,7 @@ func ListReactions(c echo.Context) error  {
 
 	type Reaction struct {
 		Emoji string `json:"emoji"`
-		Count int `json:"count"`
+		Count int    `json:"count"`
 	}
 
 	reactions := []Reaction{}
@@ -41,7 +41,7 @@ func ListReactions(c echo.Context) error  {
 
 func AddReaction(c echo.Context) error {
 	messageId := c.Param("id")
-	
+
 	var req struct {
 		UserID int    `json:"user_id"`
 		Emoji  string `json:"emoji"`
@@ -62,7 +62,7 @@ func AddReaction(c echo.Context) error {
 	).Scan(&exists)
 
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "データベースエラー: " + err.Error())
+		return c.String(http.StatusInternalServerError, "データベースエラー: "+err.Error())
 	}
 
 	if exists {
@@ -82,7 +82,7 @@ func AddReaction(c echo.Context) error {
 	}
 
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "リアクションの更新に失敗しました: " + err.Error())
+		return c.String(http.StatusInternalServerError, "リアクションの更新に失敗しました: "+err.Error())
 	}
 
 	return c.String(http.StatusOK, "リアクションが更新されました")

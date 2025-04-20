@@ -106,4 +106,4 @@ func GetTestDBURL() string {
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		testDBUser, testDBPassword, testDBHost, testDBPort, testDBName,
 	)
-} 
+}

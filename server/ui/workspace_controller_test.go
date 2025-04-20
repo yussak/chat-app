@@ -72,7 +72,7 @@ func TestListWorkspaces_Success(t *testing.T) {
 
 	// ワークスペースサービスにモックリポジトリを注入
 	service := application.NewWorkspaceService(mockRepo)
-	
+
 	// コントローラにサービスを注入
 	handler := NewWorkspaceController(service)
 
