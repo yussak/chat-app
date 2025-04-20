@@ -16,7 +16,7 @@ func NewWorkspaceController(s application.WorkspaceService) *WorkspaceController
 	return &WorkspaceController{Service: s}
 }
 
-func (h *WorkspaceController) ListWorkspaces(c echo.Context) error {
+func (h *WorkspaceController) ListWorkspacesHandler(c echo.Context) error {
 	workspaces, err := h.Service.ListWorkspaces()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find workspaces"})

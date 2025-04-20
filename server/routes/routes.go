@@ -34,7 +34,7 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	e.DELETE("/messages/:id", h.MessageController.DeleteMessageHandler)
 
 	// todo:handlerに揃える
-	e.GET("/workspaces", h.WorkspaceController.ListWorkspaces)
+	e.GET("/workspaces", h.WorkspaceController.ListWorkspacesHandler)
 	e.POST("/workspaces", h.WorkspaceController.CreateWorkspaceHandler)
 	e.GET("/workspaces/:id", h.WorkspaceController.GetWorkspace)
 
