@@ -29,20 +29,19 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 		return controllers.AddReaction(c)
 	})
 
-	e.POST("/workspaces", func(c echo.Context) error {
-		return controllers.CreateWorkspace(c)
-	})
-
 	e.GET("/messages", h.MessageController.GetMessagesHandler)
 	e.POST("/messages", h.MessageController.AddMessageHandler)
 	e.DELETE("/messages/:id", h.MessageController.DeleteMessageHandler)
 
+	// todo:handlerに揃える
 	e.GET("/workspaces", h.WorkspaceController.ListWorkspaces)
+	e.POST("/workspaces", h.WorkspaceController.CreateWorkspaceHandler)
 	e.GET("/workspaces/:id", h.WorkspaceController.GetWorkspace)
 
 	e.GET("/channels/:id", func(c echo.Context) error {
 		return controllers.GetChannel(c)
 	})
 
+	// todo:handlerに揃える
 	e.GET("/sidebar", h.NavigationController.GetSidebarProps)
 }
