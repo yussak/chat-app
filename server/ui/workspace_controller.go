@@ -25,7 +25,7 @@ func (h *WorkspaceController) ListWorkspacesHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, workspaces)
 }
 
-func (h *WorkspaceController) GetWorkspace(c echo.Context) error {
+func (h *WorkspaceController) GetWorkspaceHandler(c echo.Context) error {
 	id := c.Param("id")
 	if id == "" {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "ID is required"})
