@@ -48,6 +48,12 @@ services:
       POSTGRES_USER: test_user
       POSTGRES_PASSWORD: test_password
       POSTGRES_DB: test_db
-
+  e2e:
+    build:
+      context: ./e2e
+    depends_on:
+      - client
+    volumes:
+      - ./e2e:/e2e
 volumes:
   db-data:
