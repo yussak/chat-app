@@ -27,6 +27,16 @@ type WorkspaceOwner struct {
 	DisplayName string `json:"displayName"`
 }
 
+type WorkspaceMember struct {
+	ID          int       `json:"id"`
+	WorkspaceID int       `json:"workspace_id"`
+	UserID      int       `json:"user_id"`
+	DisplayName string    `json:"display_name"`
+	ImageURL    string    `json:"image_url"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
 type WorkspaceRepository interface {
 	FindAll() ([]Workspace, error)
 	FindById(id string) (*WorkspaceWithChannels, error)

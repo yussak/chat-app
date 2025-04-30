@@ -99,7 +99,7 @@ func (r *WorkspaceRepository) CreateWorkspace(tx *sql.Tx, displayName string, na
 }
 
 func CreateWorkspaceMember(tx *sql.Tx, workspace *domain.Workspace, user *models.User, displayName string) error {
-	workspaceMember := models.WorkspaceMember{
+	workspaceMember := domain.WorkspaceMember{
 		WorkspaceID: workspace.ID,
 		UserID:      user.ID,
 		DisplayName: displayName,
