@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"server/application"
-	"server/db"
 	"server/domain"
 
 	"github.com/labstack/echo/v4"
@@ -36,7 +35,7 @@ func (h *UserController) SignInHandler(c echo.Context) error {
 
 	if existingUser == nil {
 		// 新規ユーザー作成
-		if err := h.Service.CreateUser(db.DB, &user); err != nil {
+		if err := h.Service.CreateUser(&user); err != nil {
 			log.Printf("ユーザー作成エラー: %v", err)
 			return c.JSON(http.StatusInternalServerError, map[string]string{
 				"error": "ユーザー作成失敗",
@@ -46,7 +45,7 @@ func (h *UserController) SignInHandler(c echo.Context) error {
 		existingUser = &user
 	} else {
 		// 既存ユーザーの更新
-		if err := h.Service.UpdateUser(db.DB, &user); err != nil {
+		if err := h.Service.UpdateUser(&user); err != nil {
 			log.Printf("ユーザー更新エラー: %v", err)
 			return c.JSON(http.StatusInternalServerError, map[string]string{
 				"error": "ユーザー更新失敗",

@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"database/sql"
 	"time"
 )
 
@@ -16,6 +15,6 @@ type User struct {
 
 type UserRepository interface {
 	FindUserByEmail(email string) (*User, error)
-	CreateUser(db *sql.DB, user *User) error
-	UpdateUser(db *sql.DB, user *User) error
+	CreateUser(user *User) error
+	UpdateUser(user *User) error
 }

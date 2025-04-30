@@ -28,12 +28,12 @@ func (r *UserRepository) FindUserByEmail(email string) (*domain.User, error) {
 	return user, nil
 }
 
-func (r *UserRepository) CreateUser(db *sql.DB, user *domain.User) error {
+func (r *UserRepository) CreateUser(user *domain.User) error {
 	query := `INSERT INTO users (name, email, image) VALUES ($1, $2, $3) RETURNING id`
-	return db.QueryRow(query, user.Name, user.Email, user.Image).Scan(&user.ID)
+	return db.DB.QueryRow(query, user.Name, user.Email, user.Image).Scan(&user.ID)
 }
 
-func (r *UserRepository) UpdateUser(db *sql.DB, user *domain.User) error {
+func (r *UserRepository) UpdateUser(user *domain.User) error {
 	query := `UPDATE users SET name=$1, image=$2, updated_at=NOW() WHERE email=$3 RETURNING id`
-	return db.QueryRow(query, user.Name, user.Image, user.Email).Scan(&user.ID)
+	return db.DB.QueryRow(query, user.Name, user.Image, user.Email).Scan(&user.ID)
 }
