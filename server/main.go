@@ -18,7 +18,28 @@ import (
 func main() {
 	db.Init()
 
-	// todo: 関数に切り出す
+	e := echo.New()
+
+	handlers := setupHandlers()
+
+	// CORSの設定
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		// アクセスを許可するオリジンを指定
+		AllowOrigins: []string{"http://localhost:3000"},
+		// アクセスを許可するメソッドを指定
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+		// アクセスを許可するヘッダーを指定
+		AllowHeaders:     []string{echo.HeaderContentType, echo.HeaderAuthorization, "X-CSRF-Header"},
+		AllowCredentials: true,
+	}))
+
+	routes.SetupRoutes(e, handlers)
+
+	fmt.Println("Server running on port :8080")
+	e.Logger.Fatal(e.Start(":8080"))
+}
+
+func setupHandlers() *routes.Handlers {
 	userRepo := infrastructure.NewUserRepository()
 	userService := application.NewUserService(userRepo)
 	userHandler := ui.NewUserController(userService)
@@ -53,21 +74,5 @@ func main() {
 		UserController:       userHandler,
 	}
 
-	e := echo.New()
-
-	// CORSの設定
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		// アクセスを許可するオリジンを指定
-		AllowOrigins: []string{"http://localhost:3000"},
-		// アクセスを許可するメソッドを指定
-		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
-		// アクセスを許可するヘッダーを指定
-		AllowHeaders:     []string{echo.HeaderContentType, echo.HeaderAuthorization, "X-CSRF-Header"},
-		AllowCredentials: true,
-	}))
-
-	routes.SetupRoutes(e, handlers)
-
-	fmt.Println("Server running on port :8080")
-	e.Logger.Fatal(e.Start(":8080"))
+	return handlers
 }
