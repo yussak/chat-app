@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"log"
 	"net/http"
 	"server/application"
 	"server/domain"
@@ -20,7 +19,6 @@ func NewUserController(s application.UserService) *UserController {
 func (h *UserController) SignInHandler(c echo.Context) error {
 	var user domain.User
 	if err := c.Bind(&user); err != nil {
-		log.Printf("バインドエラー: %v", err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"error": "無効なリクエスト",
 		})
@@ -36,22 +34,18 @@ func (h *UserController) SignInHandler(c echo.Context) error {
 	if existingUser == nil {
 		// 新規ユーザー作成
 		if err := h.Service.CreateUser(&user); err != nil {
-			log.Printf("ユーザー作成エラー: %v", err)
 			return c.JSON(http.StatusInternalServerError, map[string]string{
 				"error": "ユーザー作成失敗",
 			})
 		}
-		log.Printf("新規ユーザー作成完了: ID=%d", user.ID)
 		existingUser = &user
 	} else {
 		// 既存ユーザーの更新
 		if err := h.Service.UpdateUser(&user); err != nil {
-			log.Printf("ユーザー更新エラー: %v", err)
 			return c.JSON(http.StatusInternalServerError, map[string]string{
 				"error": "ユーザー更新失敗",
 			})
 		}
-		log.Println("ユーザー情報更新完了")
 		existingUser = &user
 	}
 
