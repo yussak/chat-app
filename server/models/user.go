@@ -15,6 +15,7 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// todo: model依存なくしたら消す
 func FindUserByEmail(db *sql.DB, email string) (*User, error) {
 	query := `SELECT id, name, email, image, created_at, updated_at FROM users WHERE email = $1`
 	user := &User{}

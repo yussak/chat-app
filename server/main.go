@@ -19,6 +19,10 @@ func main() {
 	db.Init()
 
 	// todo: 関数に切り出す
+	userRepo := infrastructure.NewUserRepository()
+	userService := application.NewUserService(userRepo)
+	userHandler := ui.NewUserController(userService)
+
 	workspaceRepo := infrastructure.NewWorkspaceRepository()
 	workspaceService := application.NewWorkspaceService(workspaceRepo)
 	workspaceHandler := ui.NewWorkspaceController(workspaceService)
@@ -46,6 +50,7 @@ func main() {
 		NavigationController: navigationHandler,
 		ChannelController:    channelHandler,
 		ReactionController:   reactionHandler,
+		UserController:       userHandler,
 	}
 
 	e := echo.New()
