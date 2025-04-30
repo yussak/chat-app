@@ -32,11 +32,16 @@ func main() {
 	navigationService := application.NewNavigationService(navigationRepo)
 	navigationHandler := ui.NewNavigationController(navigationService)
 
+	channelRepo := infrastructure.NewChannelRepository()
+	channelService := application.NewChannelService(channelRepo)
+	channelHandler := ui.NewChannelController(channelService)
+
 	// ポインタとして保持
 	handlers := &routes.Handlers{
 		WorkspaceController:  workspaceHandler,
 		MessageController:    messageHandler,
 		NavigationController: navigationHandler,
+		ChannelController:    channelHandler,
 	}
 
 	e := echo.New()

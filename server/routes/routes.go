@@ -10,6 +10,7 @@ import (
 type Handlers struct {
 	WorkspaceController  *ui.WorkspaceController
 	MessageController    *ui.MessageController
+	ChannelController    *ui.ChannelController
 	NavigationController *ui.NavigationController
 }
 
@@ -37,9 +38,7 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	e.POST("/workspaces", h.WorkspaceController.CreateWorkspaceHandler)
 	e.GET("/workspaces/:id", h.WorkspaceController.GetWorkspaceHandler)
 
-	e.GET("/channels/:id", func(c echo.Context) error {
-		return controllers.GetChannel(c)
-	})
+	e.GET("/channels", h.ChannelController.ListChannelsHandler)
 
 	e.GET("/sidebar", h.NavigationController.GetSidebarPropsHandler)
 }
