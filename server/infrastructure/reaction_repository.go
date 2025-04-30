@@ -2,6 +2,8 @@ package infrastructure
 
 import (
 	"database/sql"
+	"server/db"
+	"server/domain"
 )
 
 type ReactionRepository struct{}
@@ -17,4 +19,30 @@ func (r *ReactionRepository) Delete(id string, tx *sql.Tx) error {
 	}
 
 	return nil
+}
+
+func (r *ReactionRepository) ListReactions(messageId string) ([]domain.Reaction, error) {
+	rows, err := db.DB.Query(`
+	SELECT emoji, COUNT(*)
+	FROM reactions
+	WHERE message_id = $1
+	GROUP BY emoji
+	`, messageId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	reactions := []domain.Reaction{}
+	for rows.Next() {
+		var reaction domain.Reaction
+		if err := rows.Scan(&reaction.Emoji, &reaction.Count); err != nil {
+			return nil, err
+		}
+		reactions = append(reactions, reaction)
+	}
+
+	return reactions, nil
 }

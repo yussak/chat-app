@@ -7,38 +7,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func ListReactions(c echo.Context) error {
-	messageId := c.Param("id")
-	rows, err := db.DB.Query(`
-	SELECT emoji, COUNT(*)
-	FROM reactions
-	WHERE message_id = $1
-	GROUP BY emoji
-	`, messageId)
-
-	if err != nil {
-		return c.String(http.StatusInternalServerError, "データベースエラー")
-	}
-
-	defer rows.Close()
-
-	type Reaction struct {
-		Emoji string `json:"emoji"`
-		Count int    `json:"count"`
-	}
-
-	reactions := []Reaction{}
-	for rows.Next() {
-		var reaction Reaction
-		if err := rows.Scan(&reaction.Emoji, &reaction.Count); err != nil {
-			return c.String(http.StatusInternalServerError, "データ取得エラー")
-		}
-		reactions = append(reactions, reaction)
-	}
-
-	return c.JSON(http.StatusOK, reactions)
-}
-
 func AddReaction(c echo.Context) error {
 	messageId := c.Param("id")
 

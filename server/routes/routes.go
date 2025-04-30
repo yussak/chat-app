@@ -12,6 +12,7 @@ type Handlers struct {
 	MessageController    *ui.MessageController
 	ChannelController    *ui.ChannelController
 	NavigationController *ui.NavigationController
+	ReactionController   *ui.ReactionController
 }
 
 func SetupRoutes(e *echo.Echo, h *Handlers) {
@@ -23,9 +24,7 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 		return controllers.EmailExistsHandler(c)
 	})
 
-	e.GET("/messages/:id/reactions", func(c echo.Context) error {
-		return controllers.ListReactions(c)
-	})
+	e.GET("/messages/:id/reactions", h.ReactionController.ListReactionsHandler)
 	e.POST("/messages/:id/reactions", func(c echo.Context) error {
 		return controllers.AddReaction(c)
 	})

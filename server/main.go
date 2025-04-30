@@ -24,6 +24,9 @@ func main() {
 	workspaceHandler := ui.NewWorkspaceController(workspaceService)
 
 	reactionRepo := infrastructure.NewReactionRepository()
+	reactionService := application.NewReactionService(reactionRepo)
+	reactionHandler := ui.NewReactionController(reactionService)
+
 	messageRepo := infrastructure.NewMessageRepository()
 	messageService := application.NewMessageService(messageRepo, reactionRepo)
 	messageHandler := ui.NewMessageController(messageService)
@@ -42,6 +45,7 @@ func main() {
 		MessageController:    messageHandler,
 		NavigationController: navigationHandler,
 		ChannelController:    channelHandler,
+		ReactionController:   reactionHandler,
 	}
 
 	e := echo.New()

@@ -11,8 +11,10 @@ type Reaction struct {
 	UserID    int       `json:"user_id"`
 	Emoji     string    `json:"emoji"`
 	CreatedAt time.Time `json:"created_at"`
+	Count     int       `json:"count"`
 }
 
 type ReactionRepository interface {
 	Delete(id string, tx *sql.Tx) error
+	ListReactions(messageId string) ([]Reaction, error)
 }
