@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"database/sql"
-	"log"
 	"server/db"
 	"server/domain"
 )
@@ -19,9 +18,8 @@ func (r *UserRepository) FindUserByEmail(email string) (*domain.User, error) {
 
 	err := db.DB.QueryRow(query, email).Scan(&user.ID, &user.Name, &user.Email, &user.Image, &user.CreatedAt, &user.UpdatedAt)
 	if err == sql.ErrNoRows {
-		return nil, nil // 初回ログインの場合はnil
+		return nil, nil
 	} else if err != nil {
-		log.Printf("ユーザー検索失敗: %v", err)
 		return nil, err
 	}
 
@@ -30,10 +28,22 @@ func (r *UserRepository) FindUserByEmail(email string) (*domain.User, error) {
 
 func (r *UserRepository) CreateUser(user *domain.User) error {
 	query := `INSERT INTO users (name, email, image) VALUES ($1, $2, $3) RETURNING id`
-	return db.DB.QueryRow(query, user.Name, user.Email, user.Image).Scan(&user.ID)
+
+	err := db.DB.QueryRow(query, user.Name, user.Email, user.Image).Scan(&user.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *UserRepository) UpdateUser(user *domain.User) error {
 	query := `UPDATE users SET name=$1, image=$2, updated_at=NOW() WHERE email=$3 RETURNING id`
-	return db.DB.QueryRow(query, user.Name, user.Image, user.Email).Scan(&user.ID)
+
+	err := db.DB.QueryRow(query, user.Name, user.Image, user.Email).Scan(&user.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
