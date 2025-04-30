@@ -25,9 +25,7 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	})
 
 	e.GET("/messages/:id/reactions", h.ReactionController.ListReactionsHandler)
-	e.POST("/messages/:id/reactions", func(c echo.Context) error {
-		return controllers.AddReaction(c)
-	})
+	e.POST("/messages/:id/reactions", h.ReactionController.AddReactionHandler)
 
 	e.GET("/messages", h.MessageController.GetMessagesHandler)
 	e.POST("/messages", h.MessageController.AddMessageHandler)

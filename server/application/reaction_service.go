@@ -6,6 +6,7 @@ import (
 
 type ReactionService interface {
 	ListReactions(messageId string) ([]domain.Reaction, error)
+	AddReaction(messageId string, userId int, emoji string) error
 }
 
 type ReactionServiceImpl struct {
@@ -23,4 +24,13 @@ func (s *ReactionServiceImpl) ListReactions(messageId string) ([]domain.Reaction
 	}
 
 	return reactions, nil
+}
+
+func (s *ReactionServiceImpl) AddReaction(messageId string, userId int, emoji string) error {
+	err := s.reactionRepo.AddReaction(messageId, userId, emoji)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

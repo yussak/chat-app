@@ -16,5 +16,6 @@ type Reaction struct {
 
 type ReactionRepository interface {
 	Delete(id string, tx *sql.Tx) error
+	AddReaction(messageId string, userId int, emoji string) error
 	ListReactions(messageId string) ([]Reaction, error)
 }
