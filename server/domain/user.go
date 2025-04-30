@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type User struct {
 	ID        int       `json:"id"`
@@ -13,4 +16,6 @@ type User struct {
 
 type UserRepository interface {
 	FindUserByEmail(email string) (*User, error)
+	CreateUser(db *sql.DB, user *User) error
+	UpdateUser(db *sql.DB, user *User) error
 }

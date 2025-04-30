@@ -2,7 +2,6 @@ package domain
 
 import (
 	"database/sql"
-	"server/models"
 	"time"
 )
 
@@ -40,7 +39,6 @@ type WorkspaceMember struct {
 type WorkspaceRepository interface {
 	FindAll() ([]Workspace, error)
 	FindById(id string) (*WorkspaceWithChannels, error)
-	// todo:models依存を廃止
-	// CreateWorkspace(tx *sql.Tx, displayName string, name string, theme string, user *WorkspaceOwner) error
-	CreateWorkspace(tx *sql.Tx, displayName string, name string, theme string, user *models.User) error
+	// todo: domain依存もダメそうなので直す
+	CreateWorkspace(tx *sql.Tx, displayName string, name string, theme string, user *User) error
 }

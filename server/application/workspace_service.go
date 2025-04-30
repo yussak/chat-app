@@ -2,9 +2,8 @@ package application
 
 import (
 	"database/sql"
-	"server/db"
+	"errors"
 	"server/domain"
-	"server/models"
 )
 
 type WorkspaceService interface {
@@ -14,7 +13,8 @@ type WorkspaceService interface {
 }
 
 type workspaceServiceImpl struct {
-	repo domain.WorkspaceRepository
+	repo     domain.WorkspaceRepository
+	userRepo domain.UserRepository
 }
 
 func NewWorkspaceService(repo domain.WorkspaceRepository) WorkspaceService {
@@ -40,14 +40,13 @@ func (s *workspaceServiceImpl) GetWorkspace(id string) (*domain.WorkspaceWithCha
 
 func (s *workspaceServiceImpl) CreateWorkspace(tx *sql.Tx, displayName string, name string, theme string, email string) error {
 	// ユーザーを検索
-	// todo:models依存を廃止
-	user, err := models.FindUserByEmail(db.DB, email)
+	user, err := s.userRepo.FindUserByEmail(email)
 	if err != nil {
-		return err
+		return errors.New("ユーザー検索エラー")
 	}
 
 	if user == nil {
-		return err
+		return errors.New("ユーザーが見つかりません")
 	}
 
 	return s.repo.CreateWorkspace(tx, displayName, name, theme, user)

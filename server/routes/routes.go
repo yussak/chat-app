@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"server/controllers"
 	"server/ui"
 
 	"github.com/labstack/echo/v4"
@@ -17,9 +16,7 @@ type Handlers struct {
 }
 
 func SetupRoutes(e *echo.Echo, h *Handlers) {
-	e.POST("/users/signin", func(c echo.Context) error {
-		return controllers.SignInHandler(c)
-	})
+	e.POST("/users/signin", h.UserController.SignInHandler)
 
 	e.GET("/users/exists", h.UserController.EmailExistsHandler)
 

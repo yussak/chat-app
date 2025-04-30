@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"server/db"
 	"server/domain"
-	"server/models"
 )
 
 type WorkspaceRepository struct{}
@@ -71,7 +70,7 @@ func (r *WorkspaceRepository) FindById(id string) (*domain.WorkspaceWithChannels
 	return &response, nil
 }
 
-func (r *WorkspaceRepository) CreateWorkspace(tx *sql.Tx, displayName string, name string, theme string, user *models.User) error {
+func (r *WorkspaceRepository) CreateWorkspace(tx *sql.Tx, displayName string, name string, theme string, user *domain.User) error {
 	workspace := &domain.Workspace{
 		OwnerID: user.ID,
 		Name:    name,
@@ -98,7 +97,7 @@ func (r *WorkspaceRepository) CreateWorkspace(tx *sql.Tx, displayName string, na
 	return nil
 }
 
-func CreateWorkspaceMember(tx *sql.Tx, workspace *domain.Workspace, user *models.User, displayName string) error {
+func CreateWorkspaceMember(tx *sql.Tx, workspace *domain.Workspace, user *domain.User, displayName string) error {
 	workspaceMember := domain.WorkspaceMember{
 		WorkspaceID: workspace.ID,
 		UserID:      user.ID,
